@@ -1,9 +1,24 @@
 // @ts-check
+const Koa = require('koa')
+const Router = require('@koa/router')
+
+const getLayers = require('./routes/getLayers')
+const getLayer = require('./routes/getLayer')
+
 /**
- *
- * @param {import('koa')} app
+ * @returns {import('koa')}
  */
-exports.api = function api(app) {
-  app.use(require('koa-logger')())
-  app.use(require('koa-static')('../static'))
+module.exports = function main() {
+  const app = new Koa()
+  const router = new Router()
+  router.get('/layers', getLayers)
+  router.get('/layers/:bound', getLayer)
+
+  app
+    .use(require('koa-logger')())
+    .use(router.routes())
+    .use(require('koa-static')('../static'))
+    .use(router.allowedMethods())
+
+  return app
 }

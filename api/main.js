@@ -1,10 +1,6 @@
 // @ts-check
 const http = require('http')
-const Koa = require('koa')
-const app = new Koa()
-
-const { api } = require('./index')
-api(app)
+const app = require('./index')
 
 /**
  *
@@ -14,7 +10,9 @@ function interuptHandle(server) {
   console.log('Terminating app')
   server.close()
 }
-const server = http.createServer(app.callback())
+
+const instance = app()
+const server = http.createServer(instance.callback())
 server.on('listening', function () {
   const address = server.address()
   console.log(
