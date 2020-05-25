@@ -10,11 +10,6 @@ async function getLayers(map) {
     ]
     L.imageOverlay(`/layers/${line}`, bounds).addTo(map)
   }
-
-  L.marker([1.3521, 103.8198])
-    .addTo(map)
-    .bindPopup('A pretty CSS3 popup.<br> Easily customizable.')
-    .openPopup()
 }
 
 function loadMap(map) {
