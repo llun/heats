@@ -1,7 +1,7 @@
 // @ts-check
 const fs = require('fs')
 
-module.exports = function (/** @type {import('koa').Context} */ ctx) {
+module.exports = function (ctx) {
   const bounds = fs.readdirSync(`${__dirname}/layers`)
   ctx.body = {
     success: true,

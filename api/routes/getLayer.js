@@ -1,7 +1,7 @@
 // @ts-check
 const fs = require('fs')
 
-module.exports = function (/** @type {import('koa').Context} */ ctx) {
+module.exports = function (ctx) {
   const { bound } = ctx.params
   const filename = `${__dirname}/layers/${bound}.png`
 

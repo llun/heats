@@ -1,7 +1,7 @@
 // @ts-check
 const Koa = require('koa')
 const Router = require('@koa/router')
-const koaBody = require('koa-body')
+const multer = require('@koa/multer')
 
 const getLayers = require('./routes/getLayers')
 const getLayer = require('./routes/getLayer')
@@ -13,13 +13,14 @@ const postTrackFile = require('./routes/postTrackFile')
 module.exports = function main() {
   const app = new Koa()
   const router = new Router()
+  const upload = multer()
+
   router.get('/layers', getLayers)
   router.get('/layers/:bound', getLayer)
-  router.post('/tracks', postTrackFile)
+  router.post('/tracks', upload.single('file'), postTrackFile)
 
   app
     .use(require('koa-logger')())
-    .use(koaBody())
     .use(router.routes())
     .use(require('koa-static')('../static'))
     .use(router.allowedMethods())
