@@ -1,3 +1,4 @@
+// @ts-check
 async function getLayers(map) {
   const response = await fetch('/layers')
   const json = await response.json()
@@ -26,6 +27,7 @@ async function getLayers(map) {
 }
 
 window.onload = () => {
+  // @ts-ignore
   var map = new mapboxgl.Map({
     container: 'map',
     style: 'https://map.llun.dev/styles/klokantech-basic/style.json',
