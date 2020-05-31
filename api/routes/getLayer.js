@@ -1,10 +1,11 @@
 // @ts-check
 const fs = require('fs')
+const { URL } = require('url')
 
 module.exports = function (ctx) {
+  const url = new URL(ctx.request.url, 'https://localhost')
   const { bound } = ctx.params
-  const filename = `${__dirname}/layers/${bound}.png`
-
+  const filename = `${url.searchParams.get('dir')}/${bound}.png`
   try {
     fs.accessSync(filename)
   } catch (error) {

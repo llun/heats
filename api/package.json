@@ -10,8 +10,8 @@
   "author": "Maythee Anegboonlap <null@llun.me>",
   "license": "ISC",
   "dependencies": {
-    "@koa/multer": "^2.0.2",
-    "@koa/router": "^8.0.8",
+    "@koa/multer": "^3.0.0",
+    "@koa/router": "^9.0.1",
     "fast-xml-parser": "^3.17.3",
     "fit-file-parser": "^1.6.18",
     "knex": "^0.21.1",
@@ -26,7 +26,7 @@
   },
   "devDependencies": {
     "@types/koa-router": "^7.4.1",
-    "@types/node": "^14.0.5",
+    "@types/node": "^14.0.6",
     "ava": "^3.8.2",
     "prettier": "^2.0.5",
     "sinon": "^9.0.2",

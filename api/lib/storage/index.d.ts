@@ -1,5 +1,12 @@
-import { Activity } from '../types'
+import { Activity, Point } from '../types'
 
 export interface Storage {
-  addActivity(person: number, activity: Activity): Promise<void>
+  addActivity(userId: number, activity: Activity): Promise<void>
+  getActivities(userId: number): Promise<Activity[]>
+  getPoints(userId: number): Promise<Point[]>
+  getPointsBetweenDate(
+    userId: number,
+    from: number,
+    to: number
+  ): Promise<Point[]>
 }

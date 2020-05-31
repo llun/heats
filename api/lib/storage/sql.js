@@ -23,10 +23,10 @@ class SQLStorage {
 
   /**
    *
-   * @param {number} person
+   * @param {number} userId
    * @param {import('../types').Activity} activity
    */
-  async addActivity(person, activity) {
+  async addActivity(userId, activity) {
     const { points } = activity
     try {
       await this.db.transaction(async (trx) => {
@@ -41,7 +41,7 @@ class SQLStorage {
                 timestamp: point.timestamp,
                 created_at: now,
                 updated_at: now,
-                user_id: person
+                user_id: userId
               })
             )
           )
@@ -54,6 +54,17 @@ class SQLStorage {
     } catch (error) {
       console.log('Fail to add activity', error)
     }
+  }
+
+  /**
+   *
+   * @param {number} userId
+   */
+  async getPoints(userId) {
+    const pointsQuery = this.db('points').where({ user_id: userId })
+    console.log(pointsQuery.toString())
+    const points = /** @type {import('../types').Point[]} */ (await pointsQuery)
+    return points
   }
 }
 
