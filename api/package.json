@@ -4,6 +4,7 @@
   "description": "Route heatmap",
   "main": "index.js",
   "scripts": {
+    "test": "ava",
     "start": "node main.js"
   },
   "author": "Maythee Anegboonlap <null@llun.me>",
@@ -11,6 +12,7 @@
   "dependencies": {
     "@koa/multer": "^2.0.2",
     "@koa/router": "^8.0.8",
+    "fast-xml-parser": "^3.17.3",
     "fit-file-parser": "^1.6.18",
     "knex": "^0.21.1",
     "koa": "^2.12.0",
@@ -25,6 +27,8 @@
   "devDependencies": {
     "@types/koa-router": "^7.4.1",
     "@types/node": "^14.0.5",
+    "ava": "^3.8.2",
+    "sinon": "^9.0.2",
     "typescript": "^3.9.3"
   }
 }
