@@ -11,7 +11,7 @@ module.exports = function (ctx) {
     ctx.status = 404
     ctx.body = {
       success: false,
-      error: 'not found',
+      error: 'not found'
     }
     return
   }

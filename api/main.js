@@ -19,7 +19,7 @@ server.on('listening', function () {
     `Listening on ${
       typeof address === 'string'
         ? address
-        : `${address.address}:${address.port}`
+        : `${address && address.address}:${address && address.port}`
     }`
   )
 })

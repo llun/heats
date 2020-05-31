@@ -1,12 +1,13 @@
 export type Point = {
-  latitude: number,
-  longitude: number,
+  latitude: number
+  longitude: number
   altitude: number
+  timestamp: number
 }
 
 export type Activity = {
-  startTime: number,
+  startTime: number
   points: Point[]
 }
 
-export type Parser = (buffer:Buffer) => Activity
+export type Parser = (buffer: Buffer) => Activity

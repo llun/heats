@@ -3,6 +3,8 @@ const Koa = require('koa')
 const Router = require('@koa/router')
 const multer = require('@koa/multer')
 
+const SQLStorage = require('./lib/storage/sql')
+
 const getLayers = require('./routes/getLayers')
 const getLayer = require('./routes/getLayer')
 const postTrackFile = require('./routes/postTrackFile')
@@ -21,6 +23,10 @@ module.exports = function main() {
 
   app
     .use(require('koa-logger')())
+    .use(async (ctx, next) => {
+      ctx.storage = new SQLStorage()
+      await next()
+    })
     .use(router.routes())
     .use(require('koa-static')('../static'))
     .use(router.allowedMethods())

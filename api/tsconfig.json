@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "allowJs": true,
+    "noEmit": true,
+    "esModuleInterop": true,
+    "target": "ESNext",
+    "moduleResolution": "node",
+    "strictNullChecks": true,
+    "strictBindCallApply": true,
+    "strictFunctionTypes": true
+  },
+  "include": [
+    "./**/*.js",
+    "./**/*.ts"
+  ],
+  "exclude": [
+    "node_modules",
+    "index.js"
+  ]
+}

@@ -1,34 +1,38 @@
 // @ts-check
+const { parseGPX } = require('../lib/parser')
+
 function parseFitBuffer(buffer) {
   console.log('Parse fit file')
 }
 
 /**
- * 
- * @param {string} filename 
- * @param {Buffer} buffer 
+ * @param {import('../lib/storage').Storage} storage
+ * @param {string} filename
+ * @param {Buffer} buffer
  */
-function parseTextBuffer(filename, buffer) {  
+async function parseTextBuffer(storage, filename, buffer) {
   if (!filename.endsWith('gpx') && !filename.endsWith('tcx')) {
     throw new Error('Unsupported file')
   }
-  const text = buffer.toString('utf8')
-  console.log(text)
-  console.log(filename)
+
+  if (filename.endsWith('gpx')) {
+    const activity = parseGPX(buffer)
+    await storage.addActivity(1, activity)
+  }
 }
 
-module.exports = function (ctx) {
+module.exports = async function (ctx) {
+  const storage = /** @type {import('../lib/storage').Storage} */ (ctx.storage)
   const buffer = ctx.file.buffer
   try {
     if (buffer.slice(8, 12).toString('ascii') === '.FIT') {
       parseFitBuffer(buffer)
     } else {
-      parseTextBuffer(ctx.file.originalname, buffer)
-      console.log(ctx.file)
+      await parseTextBuffer(storage, ctx.file.originalname, buffer)
     }
-  
+
     ctx.body = {
-      success: true,
+      success: true
     }
   } catch (error) {
     console.log(error.message)
