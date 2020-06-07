@@ -1,6 +1,7 @@
 .DS_Store
-database/data.db
 node_modules
+*.db
 *.log
 *.zip
+*.png
 .env

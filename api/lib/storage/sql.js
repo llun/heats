@@ -77,7 +77,7 @@ class SQLStorage {
    * @param {number} userId
    */
   async getPoints(userId) {
-    const pointsQuery = this.db('points').where({ user_id: userId })
+    const pointsQuery = this.db('points').where({ userId: userId })
     console.log(pointsQuery.toString())
     const points = /** @type {import('../types').Point[]} */ (await pointsQuery)
     return points
