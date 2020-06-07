@@ -7,9 +7,10 @@ export type Point = {
 
 export type Activity = {
   name: string
+  file?: string
   createdWith: string
   startedAt: number
   points: Point[]
 }
 
-export type Parser = (buffer: Buffer) => Activity
+export type Parser = (buffer: Buffer, filename?: string) => Activity

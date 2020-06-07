@@ -19,7 +19,7 @@ async function run() {
         )
         .map(async (path) => {
           const gpx = await zip.file(path).async('nodebuffer')
-          const activity = parseGPX(gpx)
+          const activity = parseGPX(gpx, path)
           await storage.addActivity(1, activity)
           console.log(`Added ${path}`)
         })

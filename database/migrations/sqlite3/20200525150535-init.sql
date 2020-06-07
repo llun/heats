@@ -9,6 +9,7 @@ CREATE TABLE users (
 CREATE TABLE activities (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 
+  file TEXT,
   name TEXT NOT NULL,
   startedAt INTEGER NOT NULL,
   createdWith TEXT,

@@ -1,8 +1,10 @@
 // @ts-check
 const XMLParser = require('fast-xml-parser')
 
-/** @type {import('./types').Parser} */
-const parseGPX = (buffer) => {
+/**
+ * @type {import('./types').Parser}
+ * */
+const parseGPX = (buffer, filename) => {
   const data = XMLParser.parse(buffer.toString('utf8'), {
     attributeNamePrefix: '@',
     ignoreAttributes: false
@@ -32,6 +34,7 @@ const parseGPX = (buffer) => {
 
   return {
     name,
+    file: filename,
     createdWith,
     startedAt,
     points

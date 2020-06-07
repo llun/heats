@@ -40,6 +40,7 @@ class SQLStorage {
             .transacting(trx)
             .insert({
               name: activity.name,
+              file: activity.file,
               startedAt: activity.startedAt,
               createdWith: activity.createdWith,
               userId,
