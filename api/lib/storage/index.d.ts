@@ -9,4 +9,5 @@ export interface Storage {
     from: number,
     to: number
   ): Promise<Point[]>
+  close(): Promise<void>
 }

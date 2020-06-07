@@ -6,7 +6,9 @@ export type Point = {
 }
 
 export type Activity = {
-  startTime: number
+  name: string
+  createdWith: string
+  startedAt: number
   points: Point[]
 }
 

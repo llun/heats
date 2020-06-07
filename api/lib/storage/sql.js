@@ -21,6 +21,10 @@ class SQLStorage {
     })
   }
 
+  async close() {
+    return this.db.destroy()
+  }
+
   /**
    *
    * @param {number} userId
@@ -32,6 +36,16 @@ class SQLStorage {
       await this.db.transaction(async (trx) => {
         try {
           const now = Date.now()
+          const insertedActivities = await this.db('activities')
+            .transacting(trx)
+            .insert({
+              name: activity.name,
+              startedAt: activity.startedAt,
+              createdWith: activity.createdWith,
+              userId,
+              createdAt: now,
+              updatedAt: now
+            })
           await Promise.all(
             points.map(async (point) =>
               this.db('points').transacting(trx).insert({
@@ -39,9 +53,10 @@ class SQLStorage {
                 longitude: point.longitude,
                 altitude: point.altitude,
                 timestamp: point.timestamp,
-                created_at: now,
-                updated_at: now,
-                user_id: userId
+                createdAt: now,
+                updatedAt: now,
+                userId,
+                activityId: insertedActivities[0]
               })
             )
           )

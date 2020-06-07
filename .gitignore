@@ -2,4 +2,5 @@
 database/data.db
 node_modules
 *.log
+*.zip
 .env

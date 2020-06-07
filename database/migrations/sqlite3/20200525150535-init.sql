@@ -2,18 +2,24 @@
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL,
-  deleted_at INTEGER
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deletedAt INTEGER
 );
 CREATE TABLE activities (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 
-  timestamp INTEGER NOT NULL,
+  name TEXT NOT NULL,
+  startedAt INTEGER NOT NULL,
+  createdWith TEXT,
 
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL,
-  deleted_at INTEGER
+  userId INTEGER NOT NULL,
+
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deletedAt INTEGER,
+
+  FOREIGN KEY (userId) REFERENCES users (id)
 );
 CREATE TABLE points (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -25,18 +31,18 @@ CREATE TABLE points (
   data TEXT,
   timestamp INTEGER NOT NULL,
 
-  activity_id INTEGER NOT NULL,
-  user_id INTEGER NOT NULL,
+  activityId INTEGER NOT NULL,
+  userId INTEGER NOT NULL,
 
-  created_at INTEGER NOT NULL,
-  updated_at INTEGER NOT NULL,
-  deleted_at INTEGER,
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deletedAt INTEGER,
 
-  FOREIGN KEY (activity_id) REFERENCES activities (id),
-  FOREIGN KEY (user_id) REFERENCES users (id),
+  FOREIGN KEY (activityId) REFERENCES activities (id),
+  FOREIGN KEY (userId) REFERENCES users (id),
   UNIQUE (latitude, longitude, timestamp)
 );
-INSERT INTO users (id, created_at, updated_at, deleted_at) VALUES (1, 1591424156687, 1591424156687, null);
+INSERT INTO users (id, createdAt, updatedAt, deletedAt) VALUES (1, 1591424156687, 1591424156687, null);
 
 -- +migrate Down
 DROP TABLE users;

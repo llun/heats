@@ -8,8 +8,10 @@ const parseGPX = (buffer) => {
     ignoreAttributes: false
   })
   const GPX = data.gpx
-  const startTime = new Date(GPX.metadata.time).getTime()
+  const createdWith = GPX['@creator']
+  const startedAt = new Date(GPX.metadata.time).getTime()
   const tracks = Array.isArray(GPX.trk) ? GPX.trk : [GPX.trk]
+  const name = tracks[0].name
 
   const points = tracks.reduce((points, track) => {
     const segments = Array.isArray(track.trkseg) ? track.trkseg : [track.trkseg]
@@ -29,7 +31,9 @@ const parseGPX = (buffer) => {
   }, [])
 
   return {
-    startTime,
+    name,
+    createdWith,
+    startedAt,
     points
   }
 }
