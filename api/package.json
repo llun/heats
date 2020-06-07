@@ -12,6 +12,7 @@
   "dependencies": {
     "@koa/multer": "^3.0.0",
     "@koa/router": "^9.0.1",
+    "dotenv": "^8.2.0",
     "fast-xml-parser": "^3.17.3",
     "fit-file-parser": "^1.6.18",
     "knex": "^0.21.1",
