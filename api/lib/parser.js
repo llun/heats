@@ -32,12 +32,60 @@ const parseGPX = (buffer, filename) => {
     return points.push(...flatten) && points
   }, [])
 
-  return {
-    name,
-    file: filename,
-    createdWith,
-    startedAt,
-    points
-  }
+  return [
+    {
+      name,
+      file: filename,
+      createdWith,
+      startedAt,
+      points
+    }
+  ]
 }
 exports.parseGPX = parseGPX
+
+/**
+ * @type {import('./types').Parser}
+ */
+const parseTCX = (buffer, filename) => {
+  const data = XMLParser.parse(buffer.toString('utf8'), {
+    attributeNamePrefix: '@',
+    ignoreAttributes: false
+  })
+  const activities = Array.isArray(data.TrainingCenterDatabase.Activities)
+    ? data.TrainingCenterDatabase.Activities
+    : [data.TrainingCenterDatabase.Activities.Activity]
+
+  const result = []
+  for (const activity of activities) {
+    const createdWith = activity.Creator && activity.Creator.Name
+    const startedAt = new Date(
+      activity.Lap && activity.Lap['@StartTime']
+    ).getTime()
+    const name = `${activity['@Sport']}-${activity.Id}`
+    const tracks = Array.isArray(activity.Lap.Track)
+      ? activity.Lap.Track
+      : [activity.Lap.Track]
+    /** @type {import('./types').Point[]} */
+    const points = tracks.reduce((out, track) => {
+      const points = track.Trackpoint.map((point) => {
+        return {
+          latitude: point.Position.LatitudeDegrees,
+          longitude: point.Position.LongitudeDegrees,
+          altitude: point.AltitudeMeters,
+          timestamp: new Date(point.Time).getTime()
+        }
+      })
+      return out.push(...points) && out
+    }, [])
+    result.push({
+      name,
+      file: filename,
+      createdWith,
+      startedAt,
+      points
+    })
+  }
+  return result
+}
+exports.parseTCX = parseTCX

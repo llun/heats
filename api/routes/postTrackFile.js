@@ -16,8 +16,10 @@ async function parseTextBuffer(storage, filename, buffer) {
   }
 
   if (filename.endsWith('gpx')) {
-    const activity = parseGPX(buffer)
-    await storage.addActivity(1, activity)
+    const activities = parseGPX(buffer)
+    for (const activity of activities) {
+      await storage.addActivity(1, activity)
+    }
   }
 }
 
