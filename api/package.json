@@ -11,27 +11,27 @@
   "license": "ISC",
   "dependencies": {
     "@koa/multer": "^3.0.0",
-    "@koa/router": "^9.2.0",
+    "@koa/router": "^9.3.1",
     "dotenv": "^8.2.0",
     "fast-xml-parser": "^3.17.4",
     "fit-file-parser": "^1.6.18",
     "jszip": "^3.5.0",
-    "knex": "^0.21.1",
+    "knex": "^0.21.2",
     "koa": "^2.13.0",
     "koa-body": "^4.2.0",
     "koa-logger": "^3.2.1",
     "koa-static": "^5.0.0",
     "mapheat": "^1.1.5",
     "multer": "^1.4.2",
-    "pg": "^8.2.1",
+    "pg": "^8.3.0",
     "sqlite3": "^5.0.0"
   },
   "devDependencies": {
     "@types/koa-router": "^7.4.1",
-    "@types/node": "^14.0.14",
-    "ava": "^3.9.0",
+    "@types/node": "^14.0.24",
+    "ava": "^3.10.1",
     "prettier": "^2.0.5",
     "sinon": "^9.0.2",
-    "typescript": "^3.9.6"
+    "typescript": "^3.9.7"
   }
 }
