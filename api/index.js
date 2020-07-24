@@ -17,12 +17,14 @@ const { getStorage } = require('./lib/storage')
 const getLayers = require('./routes/getLayers')
 const getLayer = require('./routes/getLayer')
 const postTrackFile = require('./routes/postTrackFile')
+const { indexRoutes } = require('./routes')
 
 /**
  * @returns {import('koa')}
  */
 module.exports = function main() {
   const app = new Koa()
+  /** @type {import('koa-router')} */
   const router = new Router()
   const upload = multer()
 
@@ -32,6 +34,7 @@ module.exports = function main() {
   router.get('/layers', getLayers)
   router.get('/layers/:bound', getLayer)
   router.post('/tracks', upload.single('file'), postTrackFile)
+  indexRoutes(router)
 
   app
     .use(logger())
@@ -92,7 +95,7 @@ module.exports = function main() {
           loader: new nunjucks.FileSystemLoader(__dirname + '/views')
         },
         map: {
-          html: 'nunjucks'
+          njk: 'nunjucks'
         }
       })
     )
@@ -100,7 +103,7 @@ module.exports = function main() {
     .use(passport.session())
 
     .use(router.routes())
-    .use(static('../static'))
+    .use(static(__dirname + '/static'))
     .use(router.allowedMethods())
 
   return app
