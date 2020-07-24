@@ -2,9 +2,27 @@
 CREATE TABLE users (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
   
+  email TEXT NOT NULL,
+  password TEXT NOT NULL,
+  salt TEXT NOT NULL,
+
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
   deletedAt INTEGER
+);
+CREATE TABLE sessions (
+  id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+
+  key TEXT NOT NULL,
+  data TEXT,
+
+  userId INTEGER,
+
+  createdAt INTEGER NOT NULL,
+  updatedAt INTEGER NOT NULL,
+  deletedAt INTEGER,
+
+  FOREIGN KEY (userId) REFERENCES users (id)
 );
 CREATE TABLE activities (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -43,9 +61,9 @@ CREATE TABLE points (
   FOREIGN KEY (activityId) REFERENCES activities (id),
   FOREIGN KEY (userId) REFERENCES users (id)
 );
-INSERT INTO users (id, createdAt, updatedAt, deletedAt) VALUES (1, 1591424156687, 1591424156687, null);
 
 -- +migrate Down
 DROP TABLE users;
+DROP TABLE sessions;
 DROP TABLE activities;
 DROP TABLE points;

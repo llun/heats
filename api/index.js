@@ -2,8 +2,17 @@
 const Koa = require('koa')
 const Router = require('@koa/router')
 const multer = require('@koa/multer')
+const logger = require('koa-logger')
+const bodyParser = require('koa-bodyparser')
+const CSRF = require('koa-csrf')
+const session = require('koa-session')
+const static = require('koa-static')
+const passport = require('koa-passport')
+const views = require('koa-views')
+const nunjucks = require('nunjucks')
 
-const SQLStorage = require('./lib/storage/sql')
+const { setup } = require('./lib/auth')
+const { getStorage } = require('./lib/storage')
 
 const getLayers = require('./routes/getLayers')
 const getLayer = require('./routes/getLayer')
@@ -17,18 +26,81 @@ module.exports = function main() {
   const router = new Router()
   const upload = multer()
 
+  app.keys = [Math.random().toString(36)]
+  setup(passport)
+
   router.get('/layers', getLayers)
   router.get('/layers/:bound', getLayer)
   router.post('/tracks', upload.single('file'), postTrackFile)
 
   app
-    .use(require('koa-logger')())
+    .use(logger())
+    .use(bodyParser())
+    .use(
+      session(
+        {
+          store: {
+            async get(key) {
+              const storage = await getStorage()
+              return storage.getSession(key)
+            },
+            async set(key, session, maxAge, { rolling, changed }) {
+              if (!changed) {
+                return
+              }
+
+              const storage = await getStorage()
+              await storage.updateSession(key, session)
+            },
+            async destroy(key) {
+              const storage = await getStorage()
+              await storage.destroySession(key)
+            }
+          }
+        },
+        app
+      )
+    )
+    .use(
+      new CSRF({
+        invalidTokenMessage: 'Invalid CSRF Token',
+        invalidTokenStatusCode: 403,
+        excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
+        disableQuery: false
+      })
+    )
     .use(async (ctx, next) => {
-      ctx.storage = new SQLStorage()
+      const storage = await getStorage()
+      ctx.state.storage = storage
+      ctx.state.csrf = ctx.csrf
+      ctx.flash = function (type, msg) {
+        ctx.session.flash = { type: type, message: msg }
+      }
+      if (ctx.session.flash) {
+        ctx.state.flash = ctx.session.flash
+        delete ctx.session.flash
+      }
+      if (ctx.session && ctx.session.passport && ctx.session.passport.user) {
+        const user = await storage.getUser(ctx.session.passport.user)
+        ctx.state.user = user
+      }
       await next()
     })
+    .use(
+      views(__dirname + '/views', {
+        options: {
+          loader: new nunjucks.FileSystemLoader(__dirname + '/views')
+        },
+        map: {
+          html: 'nunjucks'
+        }
+      })
+    )
+    .use(passport.initialize())
+    .use(passport.session())
+
     .use(router.routes())
-    .use(require('koa-static')('../static'))
+    .use(static('../static'))
     .use(router.allowedMethods())
 
   return app

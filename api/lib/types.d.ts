@@ -13,4 +13,14 @@ export type Activity = {
   points: Point[]
 }
 
+export type Session = {
+  key: string
+  data: any
+}
+
+export type User = {
+  id: number
+  email: string
+}
+
 export type Parser = (buffer: Buffer, filename?: string) => Promise<Activity[]>

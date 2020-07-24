@@ -1,6 +1,7 @@
 // @ts-check
 const knex = require('knex')
 const path = require('path')
+const crypto = require('crypto')
 
 /**
  * @typedef {import('knex').Config} Config
@@ -80,12 +81,131 @@ class SQLStorage {
   /**
    *
    * @param {number} userId
+   * @param {number} from
+   * @param {number} to
+   */
+  async getPointsBetweenDate(userId, from, to) {
+    throw new Error('No implementation')
+  }
+
+  /**
+   *
+   * @param {number} userId
    */
   async getPoints(userId) {
     const pointsQuery = this.db('points').where({ userId: userId })
     console.log(pointsQuery.toString())
     const points = /** @type {import('../types').Point[]} */ (await pointsQuery)
     return points
+  }
+
+  /**
+   * Session methods
+   */
+
+  /**
+   *
+   * @param {string} key
+   * @return {Promise<import('../types').Session | null>}
+   */
+  async getSession(key) {
+    const record = await this.db('sessions')
+      .where('key', key)
+      .whereNull('deletedAt')
+      .first()
+    if (!record) return null
+
+    return (record.data && JSON.parse(record.data)) || null
+  }
+
+  /**
+   *
+   * @param {string} key
+   * @param {any} data
+   * @param {number} [userId]
+   */
+  async updateSession(key, data, userId) {
+    const now = Date.now()
+    const db = this.db
+    try {
+      await db.transaction(async (trx) => {
+        const existingSession = await trx('sessions')
+          .where('key', key)
+          .whereNull('deletedAt')
+          .first()
+        if (!existingSession) {
+          await trx('sessions').insert({
+            key,
+            data: JSON.stringify(data),
+            userId: data && data.passport && data.passport.user,
+            createdAt: now,
+            updatedAt: now
+          })
+          return
+        }
+        await trx('sessions')
+          .where('key', key)
+          .update({
+            data: JSON.stringify(data),
+            userId: data && data.passport && data.passport.user,
+            updatedAt: now
+          })
+      })
+    } catch (error) {
+      console.error(error.message)
+      throw error
+    }
+  }
+
+  /**
+   *
+   * @param {string} key
+   */
+  async destroySession(key) {
+    const now = new Date()
+    await this.db('sessions').where('key', key).update({
+      deleted_at: now
+    })
+  }
+
+  /**
+   * User
+   */
+  /**
+   *
+   * @param {number} userId
+   * @returns {Promise<import('../types').User | null>}
+   */
+  async getUser(userId) {
+    const record = await this.db('users').where('id', userId).first()
+    if (!record) return null
+
+    return {
+      id: record.id,
+      email: record.email
+    }
+  }
+
+  /**
+   *
+   * @param {string} email
+   * @param {string} password
+   * @returns {Promise<import('../types').User | null>}
+   */
+  async authenticateUser(email, password) {
+    const record = await this.db('users').where('email', email).first()
+    if (!record) return null
+
+    const input = `${password}/${record.salt}`
+    const hex = crypto.createHash('sha256').update(input).digest('hex')
+    if (hex !== record.password) {
+      return null
+    }
+
+    return {
+      id: record.id,
+      email: record.email
+    }
   }
 }
 
