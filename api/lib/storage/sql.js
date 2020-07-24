@@ -48,27 +48,32 @@ class SQLStorage {
               updatedAt: now
             })
           await Promise.all(
-            points.map(async (point) =>
-              this.db('points').transacting(trx).insert({
-                latitude: point.latitude,
-                longitude: point.longitude,
-                altitude: point.altitude,
-                timestamp: point.timestamp,
-                createdAt: now,
-                updatedAt: now,
-                userId,
-                activityId: insertedActivities[0]
-              })
+            points.map(async (point, index) =>
+              this.db('points')
+                .transacting(trx)
+                .insert({
+                  latitude: point.latitude,
+                  longitude: point.longitude,
+                  altitude:
+                    typeof point.altitude === 'number'
+                      ? point.altitude
+                      : points[index - 1].altitude || 0,
+                  timestamp: point.timestamp,
+                  createdAt: now,
+                  updatedAt: now,
+                  userId,
+                  activityId: insertedActivities[0]
+                })
             )
           )
           await trx.commit()
         } catch (error) {
-          console.log(error.message)
+          console.error(error.message)
           await trx.rollback()
         }
       })
     } catch (error) {
-      console.log('Fail to add activity', error)
+      console.error('Fail to add activity', activity.file, error)
     }
   }
 

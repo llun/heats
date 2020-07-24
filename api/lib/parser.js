@@ -52,35 +52,39 @@ const parseTCX = (buffer, filename) => {
     attributeNamePrefix: '@',
     ignoreAttributes: false
   })
+
   const activities = Array.isArray(data.TrainingCenterDatabase.Activities)
     ? data.TrainingCenterDatabase.Activities
     : [data.TrainingCenterDatabase.Activities.Activity]
 
+  /** @type {import('./types').Activity[]} */
   const result = []
   for (const activity of activities) {
-    const createdWith = activity.Creator && activity.Creator.Name
-    const startedAt = new Date(
-      activity.Lap && activity.Lap['@StartTime']
-    ).getTime()
+    const createdWith = (activity.Creator && activity.Creator.Name) || 'Unknown'
+    const laps = Array.isArray(activity.Lap) ? activity.Lap : [activity.Lap]
+    const startedAt = new Date(laps[0] && laps[0]['@StartTime']).getTime()
     const name = `${activity['@Sport']}-${activity.Id}`
-    const tracks = Array.isArray(activity.Lap.Track)
-      ? activity.Lap.Track
-      : [activity.Lap.Track]
     /** @type {import('./types').Point[]} */
-    const points = tracks.reduce((out, track) => {
-      const points = track.Trackpoint.map((point) => {
-        return {
-          latitude: point.Position.LatitudeDegrees,
-          longitude: point.Position.LongitudeDegrees,
-          altitude: point.AltitudeMeters,
-          timestamp: new Date(point.Time).getTime()
-        }
-      })
-      return out.push(...points) && out
-    }, [])
+    const points = []
+    for (const lap of laps) {
+      const tracks = Array.isArray(lap.Track) ? lap.Track : [lap.Track]
+      /** @type {import('./types').Point[]} */
+      const points = tracks.reduce((out, track) => {
+        const points = track.Trackpoint.map((point) => {
+          return {
+            latitude: point.Position.LatitudeDegrees,
+            longitude: point.Position.LongitudeDegrees,
+            altitude: point.AltitudeMeters,
+            timestamp: new Date(point.Time).getTime()
+          }
+        })
+        return out.push(...points) && out
+      }, [])
+      points.push(...points)
+    }
     result.push({
       name,
-      file: filename,
+      file: `${filename}`,
       createdWith,
       startedAt,
       points

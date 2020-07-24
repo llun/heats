@@ -20,7 +20,8 @@ CREATE TABLE activities (
   updatedAt INTEGER NOT NULL,
   deletedAt INTEGER,
 
-  FOREIGN KEY (userId) REFERENCES users (id)
+  FOREIGN KEY (userId) REFERENCES users (id),
+  UNIQUE (userId, file)
 );
 CREATE TABLE points (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
@@ -40,8 +41,7 @@ CREATE TABLE points (
   deletedAt INTEGER,
 
   FOREIGN KEY (activityId) REFERENCES activities (id),
-  FOREIGN KEY (userId) REFERENCES users (id),
-  UNIQUE (latitude, longitude, timestamp)
+  FOREIGN KEY (userId) REFERENCES users (id)
 );
 INSERT INTO users (id, createdAt, updatedAt, deletedAt) VALUES (1, 1591424156687, 1591424156687, null);
 

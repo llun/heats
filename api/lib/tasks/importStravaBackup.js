@@ -1,13 +1,19 @@
 // @ts-check
+const { unzipSync } = require('zlib')
 const fs = require('fs')
 const path = require('path')
 const JSZip = require('jszip')
 const SQLStorage = require('../storage/sql')
 const { parseGPX, parseTCX } = require('../parser')
 
+/**
+ *
+ * @param {string} path
+ * @returns {import('../types').Parser | null}
+ */
 function getParser(path) {
   if (path.endsWith('gpx')) return parseGPX
-  else if (path.endsWith('tcx')) return parseTCX
+  else if (path.endsWith('tcx') || path.endsWith('tcx.gz')) return parseTCX
   else return null
 }
 
@@ -18,30 +24,25 @@ async function run() {
       path.resolve(`${__dirname}/../../export_8734755.zip`)
     )
     const zip = await JSZip.loadAsync(buffer)
-    console.log(
-      Object.keys(zip.files).filter(
-        (name) => name.startsWith('activities/') && !name.endsWith('/')
-      )
+    const activities = Object.keys(zip.files).filter(
+      (name) =>
+        name.startsWith('activities/') &&
+        (name.endsWith('.tcx.gz') || name.endsWith('.gpx'))
     )
-    // const x = zip.file(zip.files[0]).async('nodebuffer')
-    // const parser = getParser(zip.files[0])
-    // console.log(parser)
+    for (const activity of activities) {
+      const parser = getParser(activity)
+      if (!parser) {
+        continue
+      }
 
-    // await Promise.all(
-    //   Object.keys(zip.files)
-    //     .filter((name) => name.startsWith('activities/'))
-    //     .map(async (path) => {
-    //       const buffer = await zip.file(path).async('nodebuffer')
-    //       const parser = getParser(path)
-    //       if (!parser) return
-
-    //       const activities = parser(buffer, path)
-    //       for (const activity of activities) {
-    //         await storage.addActivity(1, activity)
-    //       }
-    //       console.log(`Added ${path}`)
-    //     })
-    // )
+      const raw = await zip.files[activity].async('nodebuffer')
+      const data = activity.endsWith('gz') ? unzipSync(raw) : raw
+      const parsedActivities = parser(data, path.basename(activity))
+      for (const parsedActivity of parsedActivities) {
+        await storage.addActivity(1, parsedActivity)
+        console.log(`Added ${activity}`)
+      }
+    }
   } finally {
     await storage.close()
   }
