@@ -31,7 +31,7 @@ class SQLStorage {
    * @param {import('../types').Activity} activity
    */
   async addActivity(userId, activity) {
-    const { points } = activity
+    const { points, file } = activity
     try {
       await this.db.transaction(async (trx) => {
         try {
@@ -57,7 +57,7 @@ class SQLStorage {
                   altitude:
                     typeof point.altitude === 'number'
                       ? point.altitude
-                      : points[index - 1].altitude || 0,
+                      : (points[index - 1] && points[index - 1].altitude) || 0,
                   timestamp: point.timestamp,
                   createdAt: now,
                   updatedAt: now,

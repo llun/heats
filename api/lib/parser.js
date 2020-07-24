@@ -1,10 +1,12 @@
 // @ts-check
+const _ = require('lodash')
 const XMLParser = require('fast-xml-parser')
+const FitParser = require('fit-file-parser').default
 
 /**
  * @type {import('./types').Parser}
  * */
-const parseGPX = (buffer, filename) => {
+const parseGPX = async (buffer, filename) => {
   const data = XMLParser.parse(buffer.toString('utf8'), {
     attributeNamePrefix: '@',
     ignoreAttributes: false
@@ -47,7 +49,7 @@ exports.parseGPX = parseGPX
 /**
  * @type {import('./types').Parser}
  */
-const parseTCX = (buffer, filename) => {
+const parseTCX = async (buffer, filename) => {
   const data = XMLParser.parse(buffer.toString('utf8'), {
     attributeNamePrefix: '@',
     ignoreAttributes: false
@@ -84,7 +86,7 @@ const parseTCX = (buffer, filename) => {
     }
     result.push({
       name,
-      file: `${filename}`,
+      file: filename,
       createdWith,
       startedAt,
       points
@@ -93,3 +95,53 @@ const parseTCX = (buffer, filename) => {
   return result
 }
 exports.parseTCX = parseTCX
+
+/**
+ * @type {import('./types').Parser}
+ */
+const parseFIT = async (buffer, filename) => {
+  const parser = new FitParser({
+    force: true,
+    speedUnit: 'km/h',
+    lengthUnit: 'km',
+    elapsedRecordField: true,
+    mode: 'cascade'
+  })
+
+  const parsedData = await new Promise((resolve, reject) => {
+    parser.parse(buffer, (error, data) => {
+      if (error) return reject(error)
+      resolve(data)
+    })
+  })
+
+  const fileId = parsedData.file_id
+  const createdWith = (fileId && fileId.manufacturer) || 'Unknown'
+  const startedAt = new Date(fileId && fileId.time_created).getTime()
+  const name = `${createdWith}-${new Date(fileId.time_created).toISOString()}`
+
+  const activity = parsedData.activity
+  const sessions = activity.sessions
+  const points = _.flattenDeep(
+    sessions.map((session) =>
+      session.laps.map((lap) =>
+        lap.records.map((record) => ({
+          latitude: record.position_lat,
+          longitude: record.position_long,
+          altitude: record.altitude,
+          timestamp: new Date(record.timestamp).getTime()
+        }))
+      )
+    )
+  ).filter((point) => point.latitude && point.longitude)
+  return [
+    {
+      name,
+      file: filename,
+      createdWith,
+      startedAt,
+      points
+    }
+  ]
+}
+exports.parseFIT = parseFIT

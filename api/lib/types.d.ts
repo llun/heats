@@ -13,4 +13,4 @@ export type Activity = {
   points: Point[]
 }
 
-export type Parser = (buffer: Buffer, filename?: string) => Activity[]
+export type Parser = (buffer: Buffer, filename?: string) => Promise<Activity[]>

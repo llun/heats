@@ -4,7 +4,7 @@ const fs = require('fs')
 const path = require('path')
 const JSZip = require('jszip')
 const SQLStorage = require('../storage/sql')
-const { parseGPX, parseTCX } = require('../parser')
+const { parseGPX, parseTCX, parseFIT } = require('../parser')
 
 /**
  *
@@ -14,6 +14,7 @@ const { parseGPX, parseTCX } = require('../parser')
 function getParser(path) {
   if (path.endsWith('gpx')) return parseGPX
   else if (path.endsWith('tcx') || path.endsWith('tcx.gz')) return parseTCX
+  else if (path.endsWith('fit') || path.endsWith('fit.gz')) return parseFIT
   else return null
 }
 
@@ -27,8 +28,12 @@ async function run() {
     const activities = Object.keys(zip.files).filter(
       (name) =>
         name.startsWith('activities/') &&
-        (name.endsWith('.tcx.gz') || name.endsWith('.gpx'))
+        (name.endsWith('.tcx.gz') ||
+          name.endsWith('.gpx') ||
+          name.endsWith('.fit.gz') ||
+          name.endsWith('.fit'))
     )
+
     for (const activity of activities) {
       const parser = getParser(activity)
       if (!parser) {
@@ -37,7 +42,7 @@ async function run() {
 
       const raw = await zip.files[activity].async('nodebuffer')
       const data = activity.endsWith('gz') ? unzipSync(raw) : raw
-      const parsedActivities = parser(data, path.basename(activity))
+      const parsedActivities = await parser(data, path.basename(activity))
       for (const parsedActivity of parsedActivities) {
         await storage.addActivity(1, parsedActivity)
         console.log(`Added ${activity}`)
