@@ -1,19 +1,33 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
   <head>
-    <title>Upload data</title>
+    <title>Map</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.js'></script>
+    <link href='https://api.mapbox.com/mapbox-gl-js/v1.10.1/mapbox-gl.css' rel='stylesheet' />
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/5.0.0-alpha1/css/bootstrap.min.css" integrity="sha384-r4NyP46KrjDleawBgD5tp8Y7UzmLA05oM1iAEQ17CSuDqnUK2+k9luXQOfXJCJ4I" crossorigin="anonymous">
     <link rel="stylesheet" href="/css/index.css">
-    <script src="/scripts/upload.js"></script>
+    <script src="/scripts/index.js"></script>
   </head>
   <body>
-    <form action="/tracks" method="POST" enctype="multipart/form-data">
-      <p>
-        <label>
-          GPX, TCX or Fit file
-          <input type="file" name="file" />
-        </label>
-      </p>
-      <button type="submit">Upload</button>
-    </form>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <a class="navbar-brand" href="#">Heats</a>
+        <div class="navbar-nav">
+          <a class="nav-link active" href="/upload.html">Upload</a>
+        </div>
+      </div>
+    </nav>
+    <div class="container">
+      <form action="/tracks" method="POST" enctype="multipart/form-data">
+        <div class="mb-3">
+          <label for="file" class="form-label">
+            GPX, TCX or Fit file
+          </label>
+          <input type="file" name="file" class="form-control" />
+        </div>
+        <button type="submit" class="btn btn-primary">Upload</button>
+      </form>
+    </div>
   </body>
 </html>
