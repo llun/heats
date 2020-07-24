@@ -1,45 +1,7 @@
-:root {
-  --gainsboro: #dcdcdc;
-  --lightgray: #e0e0e0;
-  --gray: #5d5d5d;
-  --darkgray: #333;
-  --navy: #17050f;
-  --blue: #082840;
-  --white: #fff;
-}
-* {
-  box-sizing: border-box;
-}
 html,
 body {
   height: 100%;
   margin: 0;
-  font-family: sans-serif;
-}
-a[href] {
-  color: var(--blue);
-}
-a[href]:visited {
-  color: var(--navy);
-}
-
-header {
-  height: 60px;
-  background-color: var(--white);
-  display: flex;
-  font-size: 1.2rem;
-  padding: 0 1rem;
-}
-header a[href]:not(:hover) {
-  text-decoration: none;
-}
-header nav ul {
-  list-style: none;
-  padding: 0;
-}
-header .title {
-  margin: 1em 0;
-  flex: 1;
 }
 
 #map {
