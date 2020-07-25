@@ -27,6 +27,7 @@ async function createUser(ctx) {
   const salt = crypto.randomBytes(32).toString('hex')
   const hash = crypto.scryptSync(password, salt, 64).toString('hex')
   await storage.createUser(username, salt, hash)
+  ctx.flash('alert-success', 'User is created')
   ctx.redirect('/')
 }
 exports.createUser = createUser

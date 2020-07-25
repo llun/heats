@@ -11,4 +11,5 @@ body {
 .signin,
 .signup {
   display: block;
+  pointer-events: none;
 }

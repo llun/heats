@@ -36,6 +36,7 @@ test('#createUser add new record into database and redirect to sigin', async (t)
       email: sinon.match.string
     })
   })
+  t.true(ctx.flash.calledWith('alert-success', 'User is created'))
   t.true(ctx.redirect.calledWith('/'))
 })
 
