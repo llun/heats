@@ -4,11 +4,53 @@ org: llunspace
 
 provider:
   name: aws
+  stage: ${opt:stage, 'dev'}
   runtime: nodejs12.x
   region: ap-southeast-1
+  environment:
+    SESSION_SECRET: ${param:SESSION_SECRET}
+    ENVIRONMENT: ${opt:stage}
+    DYNAMODB: '1'
+  httpApi:
+    payload: '1.0'
 
 functions:
   serve:
+    name: heats-serve-${opt:stage}
     handler: serverless.entry
     events:
       - httpApi: '*'
+
+resources:
+  Resources:
+    UserTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Users-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+          - AttributeName: email
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: EmailIndex
+            KeySchema:
+              - AttributeName: email
+                KeyType: HASH
+            Projection:
+              ProjectionType: KEYS_ONLY
+        BillingMode: PAY_PER_REQUEST
+    SessionTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Sessions-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        BillingMode: PAY_PER_REQUEST
