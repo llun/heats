@@ -34,12 +34,11 @@ async function createUser(ctx) {
 exports.createUser = createUser
 
 /**
- * @param {import('@koa/multer').Instance} upload
  * @param {import('passport')} passport
  *
  * @returns {import('@koa/router')}
  */
-exports.routes = (upload, passport) => {
+exports.routes = (passport) => {
   /** @type {import('../lib/types').AppRouter} */
   const router = new Router()
 
@@ -53,7 +52,7 @@ exports.routes = (upload, passport) => {
       failureFlash: 'Invalid email or password'
     })
   )
-  router.get('/logout', authenticatedGuard, async (ctx) => {
+  router.get('/signout', authenticatedGuard, async (ctx) => {
     await ctx.logout()
     ctx.redirect('/')
   })

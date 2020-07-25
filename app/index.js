@@ -23,13 +23,14 @@ module.exports = function main() {
   const upload = multer()
 
   const _passport = /** @type {any} */ (passport)
-  const router = routes(upload, /** @type {import('passport')} */ (_passport))
+  const router = routes(/** @type {import('passport')} */ (_passport))
 
   app.keys = [process.env.SESSION_SECRET || Math.random().toString(36)]
   setup(passport)
 
   app
     .use(logger())
+    .use(upload.single('upload'))
     .use(bodyParser())
     .use(
       session(
