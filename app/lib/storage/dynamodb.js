@@ -60,9 +60,7 @@ class DynamoDBStorage {
    * @param {string} key
    * @param {any} data
    */
-  async updateSession(key, data) {
-    throw new Error('No implementation')
-  }
+  async updateSession(key, data) {}
 
   /**
    *
