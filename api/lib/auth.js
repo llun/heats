@@ -1,14 +1,38 @@
 // @ts-check
-const passport = require('koa-passport')
 const crypto = require('crypto')
+const LocalStrategy = require('passport-local').Strategy
 
 const { getStorage } = require('./storage')
+
+/**
+ *
+ * @param {import('./storage').Storage} storage
+ */
+function passwordAuthenticate(storage) {
+  return async function (email, password, done) {
+    const user = await storage.getUserByEmail(email)
+    if (!user) {
+      return done(null, false)
+    }
+
+    const hash = crypto.scryptSync(password, user.salt, 64).toString('hex')
+    if (hash !== user.hash) {
+      return done(null, false)
+    }
+
+    done(null, {
+      key: user.key,
+      email: user.email
+    })
+  }
+}
+exports.passwordAuthenticate = passwordAuthenticate
 
 exports.setup = async function (passport) {
   const storage = await getStorage()
 
   passport.serializeUser(function (user, done) {
-    done(null, user.id)
+    done(null, user.key)
   })
 
   passport.deserializeUser(async function (id, done) {
@@ -20,19 +44,5 @@ exports.setup = async function (passport) {
     }
   })
 
-  const LocalStrategy = require('passport-local').Strategy
-  passport.use(
-    new LocalStrategy(async function (username, password, done) {
-      try {
-        const user = await storage.authenticateUser(username, password)
-        if (!user) {
-          return done(null, false)
-        }
-        return done(null, user)
-      } catch (error) {
-        console.error(error)
-        return done(error)
-      }
-    })
-  )
+  passport.use(new LocalStrategy(passwordAuthenticate(storage)))
 }

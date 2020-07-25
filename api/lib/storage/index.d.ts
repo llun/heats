@@ -30,7 +30,6 @@ export interface Storage {
     salt: string,
     hash: string
   ): Promise<StoredUser | null>
-  authenticateUser(email: string, password: string): Promise<User | null>
 
   close(): Promise<void>
 }

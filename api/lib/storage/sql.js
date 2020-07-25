@@ -237,28 +237,6 @@ class SQLStorage {
       return null
     }
   }
-
-  /**
-   *
-   * @param {string} email
-   * @param {string} password
-   * @returns {Promise<import('../types').User | null>}
-   */
-  async authenticateUser(email, password) {
-    const record = await this.db('users').where('email', email).first()
-    if (!record) return null
-
-    const input = `${password}/${record.salt}`
-    const hex = crypto.createHash('sha256').update(input).digest('hex')
-    if (hex !== record.password) {
-      return null
-    }
-
-    return {
-      key: `${record.id}`,
-      email: record.email
-    }
-  }
 }
 
 module.exports = SQLStorage
