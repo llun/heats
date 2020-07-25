@@ -69,6 +69,11 @@ module.exports = function main() {
       const storage = await getStorage()
       ctx.state.storage = storage
       ctx.state.csrf = ctx.csrf
+      /**
+       *
+       * @param {import('./lib/types').FlashType} type
+       * @param {string} msg
+       */
       ctx.flash = function (type, msg) {
         ctx.session.flash = { type: type, message: msg }
       }
