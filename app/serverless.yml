@@ -1,8 +1,11 @@
 service: heats
+app: heats
+org: llunspace
 
 provider:
   name: aws
   runtime: nodejs12.x
+  region: ap-southeast-1
 
 functions:
   serve:

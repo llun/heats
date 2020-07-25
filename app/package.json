@@ -7,7 +7,8 @@
     "pretty": "yarn run prettier --config .prettierrc.yml --check \"**/*.js\"",
     "lint": "yarn run pretty && tsc --noEmit",
     "test": "ava",
-    "start": "SESSION_SECRET='this is a secret' node local.js"
+    "start": "SESSION_SECRET='this is a secret' node local.js",
+    "deploy": "AWS_PROFILE=personal serverless deploy"
   },
   "author": "Maythee Anegboonlap <null@llun.dev>",
   "license": "ISC",
