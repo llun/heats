@@ -9,4 +9,6 @@ provider:
 
 functions:
   serve:
-    handler: serverless.serve
+    handler: serverless.entry
+    events:
+      - httpApi: '*'

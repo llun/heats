@@ -9,9 +9,9 @@ const { getStorage } = require('./lib/storage')
 
 const app = main()
 const handler = serverless(app)
-
 exports.handler = handler
-exports.default = async (
+
+const entry = async (
   /** @type {APIGatewayEvent} */ event,
   /** @type {any} */ context
 ) => {
@@ -20,3 +20,4 @@ exports.default = async (
   await storage.close()
   return output
 }
+exports.entry = entry

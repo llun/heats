@@ -103,6 +103,7 @@ class SQLStorage {
    * @param {number} userId
    * @param {number} from
    * @param {number} to
+   * @returns {Promise<import('../types').Point[]>}
    */
   async getPointsBetweenDate(userId, from, to) {
     throw new Error('No implementation')
@@ -117,6 +118,10 @@ class SQLStorage {
     console.log(pointsQuery.toString())
     const points = /** @type {import('../types').Point[]} */ (await pointsQuery)
     return points
+  }
+
+  async getActivities(userId) {
+    return []
   }
 
   /**
