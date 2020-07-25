@@ -44,7 +44,7 @@ exports.routes = (passport) => {
 
   router.post('/', unauthenticatedGuard, createUser)
   router.post(
-    '/login',
+    '/signin',
     unauthenticatedGuard,
     passport.authenticate('local', {
       failureRedirect: `/`,
