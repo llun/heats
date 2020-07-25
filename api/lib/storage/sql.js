@@ -122,9 +122,8 @@ class SQLStorage {
    *
    * @param {string} key
    * @param {any} data
-   * @param {number} [userId]
    */
-  async updateSession(key, data, userId) {
+  async updateSession(key, data) {
     const now = Date.now()
     const db = this.db
     try {

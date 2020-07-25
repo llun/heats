@@ -20,7 +20,7 @@ export interface Storage {
   ): Promise<Point[]>
 
   getSession(key: string): Promise<Session | null>
-  updateSession(key: string, data: any, userId?: number): Promise<void>
+  updateSession(key: string, data: any): Promise<void>
   destroySession(key: string): Promise<void>
 
   getUserByKey(key: string): Promise<StoredUser | null>
