@@ -28,6 +28,22 @@ function passwordAuthenticate(storage) {
 }
 exports.passwordAuthenticate = passwordAuthenticate
 
+exports.authenticatedGuard = async function (ctx, next) {
+  if (!ctx.isAuthenticated()) {
+    ctx.redirect(`/`)
+    return
+  }
+  await next()
+}
+
+exports.unauthenticatedGuard = async function (ctx, next) {
+  if (ctx.isAuthenticated()) {
+    ctx.redirect(`/app`)
+    return
+  }
+  await next()
+}
+
 exports.setup = async function (passport) {
   const storage = await getStorage()
 

@@ -44,5 +44,6 @@ export type AppRouter = Router<
   any,
   {
     flash: (type: FlashType, message: string) => void
+    logout: () => Promise<void>
   }
 >

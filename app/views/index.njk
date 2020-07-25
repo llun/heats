@@ -16,7 +16,7 @@
         <div class="modal-body">
           <div class="container-fluid">
             {% if flash %}
-            <div class="alert {{ flash.type }}" role="alert">
+            <div class="alert {{ 'alert-danger' if flash.type == 'error' else flash.type }}" role="alert">
               {{ flash.message }}
             </div>
             {% endif %}
@@ -32,7 +32,7 @@
           </div>
         </div>
         <div class="modal-footer">
-          <button type="button" class="btn btn-primary">Sign in</button>
+          <button type="submit" class="btn btn-primary">Sign in</button>
         </div>
       </form>
     </div>

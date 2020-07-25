@@ -1,6 +1,7 @@
 // @ts-check
 const crypto = require('crypto')
 const Router = require('@koa/router')
+const { authenticatedGuard, unauthenticatedGuard } = require('../lib/auth')
 
 /**
  *
@@ -34,14 +35,28 @@ exports.createUser = createUser
 
 /**
  * @param {import('@koa/multer').Instance} upload
+ * @param {import('passport')} passport
  *
  * @returns {import('@koa/router')}
  */
-exports.routes = (upload) => {
+exports.routes = (upload, passport) => {
   /** @type {import('../lib/types').AppRouter} */
   const router = new Router()
 
-  router.post('/', createUser)
+  router.post('/', unauthenticatedGuard, createUser)
+  router.post(
+    '/login',
+    unauthenticatedGuard,
+    passport.authenticate('local', {
+      failureRedirect: `/`,
+      successRedirect: `/app`,
+      failureFlash: 'Invalid email or password'
+    })
+  )
+  router.get('/logout', authenticatedGuard, async (ctx) => {
+    await ctx.logout()
+    ctx.redirect('/')
+  })
 
   return router
 }

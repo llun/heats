@@ -21,7 +21,9 @@ const { routes } = require('./routes')
 module.exports = function main() {
   const app = new Koa()
   const upload = multer()
-  const router = routes(upload)
+
+  const _passport = /** @type {any} */ (passport)
+  const router = routes(upload, /** @type {import('passport')} */ (_passport))
 
   app.keys = [process.env.SESSION_SECRET || Math.random().toString(36)]
   setup(passport)
