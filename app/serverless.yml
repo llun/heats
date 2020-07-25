@@ -1,0 +1,9 @@
+service: heats
+
+provider:
+  name: aws
+  runtime: nodejs12.x
+
+functions:
+  serve:
+    handler: serverless.serve

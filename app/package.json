@@ -1,5 +1,5 @@
 {
-  "name": "map",
+  "name": "heats",
   "version": "1.0.0",
   "description": "Route heatmap",
   "main": "index.js",
@@ -7,9 +7,9 @@
     "pretty": "yarn run prettier --config .prettierrc.yml --check \"**/*.js\"",
     "lint": "yarn run pretty && tsc --noEmit",
     "test": "ava",
-    "start": "node main.js"
+    "start": "SESSION_SECRET='this is a secret' node local.js"
   },
-  "author": "Maythee Anegboonlap <null@llun.me>",
+  "author": "Maythee Anegboonlap <null@llun.dev>",
   "license": "ISC",
   "dependencies": {
     "@koa/cors": "^3.1.0",
@@ -53,6 +53,7 @@
     "@types/nunjucks": "^3.1.3",
     "ava": "^3.10.1",
     "prettier": "^2.0.5",
+    "serverless": "^1.76.1",
     "sinon": "^9.0.2",
     "typescript": "^3.9.7"
   }

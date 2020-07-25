@@ -1,7 +1,7 @@
 // @ts-check
 const knex = require('knex')
 const path = require('path')
-const crypto = require('crypto')
+const { TimeoutError } = require('tarn')
 
 /**
  * @typedef {import('knex').Config} Config
@@ -20,6 +20,26 @@ class SQLStorage {
       useNullAsDefault: true,
       ...config
     })
+    const client = this.db.client
+    // TODO: Check does knex set null to client after destroy?
+    client.acquireConnection = async function acquireConnection() {
+      if (!this.pool) {
+        this.initializePool()
+      }
+      try {
+        const connection = await this.pool.acquire().promise
+        return connection
+      } catch (error) {
+        let convertedError = error
+        if (error instanceof TimeoutError) {
+          convertedError = new knex.KnexTimeoutError(
+            'Knex: Timeout acquiring a connection. The pool is probably full. ' +
+              'Are you missing a .transacting(trx) call?'
+          )
+        }
+        throw convertedError
+      }
+    }
   }
 
   async close() {
