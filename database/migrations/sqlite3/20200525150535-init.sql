@@ -8,7 +8,9 @@ CREATE TABLE users (
 
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
-  deletedAt INTEGER
+  deletedAt INTEGER,
+
+  UNIQUE (email)
 );
 CREATE TABLE sessions (
   id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,

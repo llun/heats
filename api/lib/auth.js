@@ -13,7 +13,7 @@ exports.setup = async function (passport) {
 
   passport.deserializeUser(async function (id, done) {
     try {
-      const user = await storage.getUser(id)
+      const user = await storage.getUserByKey(id)
       done(null, user)
     } catch (err) {
       done(err)

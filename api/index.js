@@ -1,6 +1,5 @@
 // @ts-check
 const Koa = require('koa')
-const Router = require('@koa/router')
 const multer = require('@koa/multer')
 const logger = require('koa-logger')
 const bodyParser = require('koa-bodyparser')
@@ -14,27 +13,18 @@ const nunjucks = require('nunjucks')
 const { setup } = require('./lib/auth')
 const { getStorage } = require('./lib/storage')
 
-const getLayers = require('./routes/getLayers')
-const getLayer = require('./routes/getLayer')
-const postTrackFile = require('./routes/postTrackFile')
-const { indexRoutes } = require('./routes')
+const { routes } = require('./routes')
 
 /**
  * @returns {import('koa')}
  */
 module.exports = function main() {
   const app = new Koa()
-  /** @type {import('koa-router')} */
-  const router = new Router()
   const upload = multer()
+  const router = routes(upload)
 
-  app.keys = [Math.random().toString(36)]
+  app.keys = [process.env.SESSION_SECRET || Math.random().toString(36)]
   setup(passport)
-
-  router.get('/layers', getLayers)
-  router.get('/layers/:bound', getLayer)
-  router.post('/tracks', upload.single('file'), postTrackFile)
-  indexRoutes(router)
 
   app
     .use(logger())
@@ -84,7 +74,7 @@ module.exports = function main() {
         delete ctx.session.flash
       }
       if (ctx.session && ctx.session.passport && ctx.session.passport.user) {
-        const user = await storage.getUser(ctx.session.passport.user)
+        const user = await storage.getUserByKey(ctx.session.passport.user)
         ctx.state.user = user
       }
       await next()

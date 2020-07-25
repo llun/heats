@@ -1,18 +1,39 @@
 // @ts-check
+const Router = require('@koa/router')
 
-async function loginPage(ctx) {
-  await ctx.render('index.njk')
-}
+const { routes: users } = require('./users')
 
-async function uploadPage(ctx) {
-  await ctx.render('upload.njk')
-}
+const getLayers = require('./getLayers')
+const getLayer = require('./getLayer')
+const postTrackFile = require('./postTrackFile')
 
 /**
  *
- * @param {import('koa-router')} router
+ * @param {string} name Template file name e.g. index.njk
  */
-exports.indexRoutes = (router) => {
-  router.get('/', loginPage)
-  router.get('/upload', uploadPage)
+function renderPage(name) {
+  return async function page(ctx) {
+    await ctx.render(name)
+  }
+}
+exports.renderPage = renderPage
+
+/**
+ * @param {import('@koa/multer').Instance} upload
+ *
+ * @returns {import('@koa/router')}
+ */
+exports.routes = (upload) => {
+  const router = new Router()
+  router.get('/', renderPage('index.njk'))
+  router.get('/signup', renderPage('signup.njk'))
+  router.get('/upload', renderPage('upload.njk'))
+
+  router.use('/users', users(upload).routes())
+
+  router.get('/layers', getLayers)
+  router.get('/layers/:bound', getLayer)
+  router.post('/tracks', upload.single('file'), postTrackFile)
+
+  return router
 }

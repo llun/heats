@@ -1,5 +1,14 @@
 import { Activity, Point, Session, User } from '../types'
 
+type StoredUser = User & {
+  salt: string
+  hash: string
+
+  createdAt: number
+  updatedAt: number
+  deletedAt: number
+}
+
 export interface Storage {
   addActivity(userId: number, activity: Activity): Promise<void>
   getActivities(userId: number): Promise<Activity[]>
@@ -14,7 +23,13 @@ export interface Storage {
   updateSession(key: string, data: any, userId?: number): Promise<void>
   destroySession(key: string): Promise<void>
 
-  getUser(userId: number): Promise<User>
+  getUserByKey(key: string): Promise<StoredUser | null>
+  getUserByEmail(email: string): Promise<StoredUser | null>
+  createUser(
+    email: string,
+    salt: string,
+    hash: string
+  ): Promise<StoredUser | null>
   authenticateUser(email: string, password: string): Promise<User | null>
 
   close(): Promise<void>

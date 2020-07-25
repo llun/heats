@@ -173,16 +173,68 @@ class SQLStorage {
    */
   /**
    *
-   * @param {number} userId
-   * @returns {Promise<import('../types').User | null>}
+   * @param {string} key
+   * @returns {Promise<import('./index').StoredUser | null>}
    */
-  async getUser(userId) {
-    const record = await this.db('users').where('id', userId).first()
+  async getUserByKey(key) {
+    const record = await this.db('users').where('id', key).first()
     if (!record) return null
 
     return {
-      id: record.id,
-      email: record.email
+      key: `${record.id}`,
+      email: record.email,
+      salt: record.salt,
+      hash: record.password,
+
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      deletedAt: record.deletedAt
+    }
+  }
+
+  /**
+   *
+   * @param {string} email
+   * @returns {Promise<import('./index').StoredUser | null>}
+   */
+  async getUserByEmail(email) {
+    const record = await this.db('users').where('email', email).first()
+    if (!record) return null
+
+    return {
+      key: `${record.id}`,
+      email: record.email,
+      salt: record.salt,
+      hash: record.password,
+
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      deletedAt: record.deletedAt
+    }
+  }
+
+  /**
+   *
+   * @param {string} email
+   * @param {string} salt
+   * @param {string} hash
+   * @returns {Promise<import('./index').StoredUser | null>}
+   */
+  async createUser(email, salt, hash) {
+    const now = Date.now()
+    try {
+      const [key] = await this.db('users').insert({
+        email,
+        salt,
+        password: hash,
+
+        createdAt: now,
+        updatedAt: now
+      })
+      return this.getUserByKey(key)
+    } catch (error) {
+      console.error(error.message)
+      return null
     }
   }
 
@@ -203,7 +255,7 @@ class SQLStorage {
     }
 
     return {
-      id: record.id,
+      key: `${record.id}`,
       email: record.email
     }
   }

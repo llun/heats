@@ -1,3 +1,5 @@
+import Router, { RouterContext } from '@koa/router'
+
 export type Point = {
   latitude: number
   longitude: number
@@ -19,8 +21,28 @@ export type Session = {
 }
 
 export type User = {
-  id: number
+  key: string
   email: string
 }
 
 export type Parser = (buffer: Buffer, filename?: string) => Promise<Activity[]>
+
+type FlashType =
+  | 'alert-primary'
+  | 'alert-secondary'
+  | 'alert-success'
+  | 'alert-danger'
+  | 'alert-warning'
+  | 'alert-info'
+  | 'alert-light'
+  | 'alert-dark'
+export type AppContext = RouterContext & {
+  flash: (type: FlashType, message: string) => void
+}
+
+export type AppRouter = Router<
+  any,
+  {
+    flash: (type: FlashType, message: string) => void
+  }
+>
