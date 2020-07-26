@@ -1,5 +1,6 @@
 import Router, { RouterContext } from '@koa/router'
 import { DefaultContext } from 'koa'
+import { File } from 'multiparty'
 
 export type Point = {
   latitude: number
@@ -39,6 +40,9 @@ type FlashType =
   | 'alert-dark'
 export type AppContext = RouterContext & {
   flash: (type: FlashType, message: string) => void
+  files?: {
+    [key in string]: File[]
+  }
 }
 
 export type AppRouter = Router<
@@ -46,5 +50,8 @@ export type AppRouter = Router<
   DefaultContext & {
     flash: (type: FlashType, message: string) => void
     logout: () => Promise<void>
+    files?: {
+      [key in string]: File[]
+    }
   }
 >

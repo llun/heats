@@ -8,6 +8,7 @@ const static = require('koa-static')
 const passport = require('koa-passport')
 const views = require('koa-views')
 const nunjucks = require('nunjucks')
+const multiparty = require('multiparty')
 
 const { setup } = require('./lib/auth')
 const { getStorage } = require('./lib/storage')
@@ -30,6 +31,40 @@ module.exports = function main() {
   app
     .use(logger())
     .use(bodyParser())
+    .use(async (ctx, next) => {
+      const request = ctx.request
+      const header = request.header
+      if (
+        header['content-type'] &&
+        header['content-type'].startsWith('multipart/form-data')
+      ) {
+        const form = new multiparty.Form()
+        const { fields, files } = await new Promise((resolve, reject) => {
+          form.parse(ctx.req, function (err, fields, files) {
+            if (err) {
+              reject(err)
+              return
+            }
+            const result = {
+              fields: Object.keys(fields).reduce((out, key) => {
+                if (fields[key].length === 1) {
+                  out[key] = fields[key][0]
+                } else {
+                  out[key] = fields[key]
+                }
+                return out
+              }, {}),
+              files
+            }
+
+            resolve(result)
+          })
+        })
+        ctx.request.body = fields
+        ctx.files = files
+      }
+      await next()
+    })
     .use(
       session(
         {

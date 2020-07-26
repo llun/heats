@@ -1,5 +1,7 @@
 // @ts-check
+const fs = require('fs')
 const Router = require('@koa/router')
+
 const { renderPage } = require('./tools')
 const { parseGPX, parseTCX, parseFIT } = require('../lib/parser')
 
@@ -21,16 +23,23 @@ function getParser(buffer, filename) {
  * @param {import('../lib/types').AppContext} ctx
  */
 async function createActivity(ctx) {
-  // const buffer = ctx.file.buffer
-  // const parser = getParser(buffer, ctx.file.originalname)
-  // if (!parser) {
-  //   ctx.flash('alert-danger', 'Unsupported file')
-  //   ctx.redirect('/activities/upload')
-  //   return
-  // }
+  if (!ctx.files || !ctx.files.upload) {
+    ctx.flash('alert-danger', 'File is required')
+    ctx.redirect('/activities/upload')
+    return
+  }
 
-  // await parser(buffer, ctx.file.originalname)
-  // ctx.flash('alert-success', 'Your file will get process soon')
+  const upload = ctx.files.upload[0]
+  const buffer = fs.readFileSync(upload.path)
+  const parser = getParser(buffer, upload.originalFilename)
+  if (!parser) {
+    ctx.flash('alert-danger', 'Unsupported file')
+    ctx.redirect('/activities/upload')
+    return
+  }
+
+  await parser(buffer, upload.originalFilename)
+  ctx.flash('alert-success', 'Your file will get process soon')
   ctx.redirect('/app')
 }
 exports.createActivity = createActivity
