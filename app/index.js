@@ -1,6 +1,5 @@
 // @ts-check
 const Koa = require('koa')
-const multer = require('@koa/multer')
 const logger = require('koa-logger')
 const bodyParser = require('koa-bodyparser')
 const CSRF = require('koa-csrf')
@@ -20,17 +19,16 @@ const { routes } = require('./routes')
  */
 module.exports = function main() {
   const app = new Koa()
-  const upload = multer()
 
   const _passport = /** @type {any} */ (passport)
   const router = routes(/** @type {import('passport')} */ (_passport))
 
+  const csrf = new CSRF()
   app.keys = [process.env.SESSION_SECRET || Math.random().toString(36)]
   setup(passport)
 
   app
     .use(logger())
-    .use(upload.single('upload'))
     .use(bodyParser())
     .use(
       session(
@@ -57,14 +55,7 @@ module.exports = function main() {
         app
       )
     )
-    .use(
-      new CSRF({
-        invalidTokenMessage: 'Invalid CSRF Token',
-        invalidTokenStatusCode: 403,
-        excludedMethods: ['GET', 'HEAD', 'OPTIONS'],
-        disableQuery: false
-      })
-    )
+    .use(csrf)
     .use(async (ctx, next) => {
       const storage = await getStorage()
       ctx.state.storage = storage
