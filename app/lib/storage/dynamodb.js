@@ -1,6 +1,8 @@
 // @ts-check
 const AWS = require('aws-sdk')
+const { v4: uuid } = require('uuid')
 const { environment } = require('../utils')
+const { now } = require('lodash')
 
 class DynamoDBStorage {
   constructor() {
@@ -61,6 +63,7 @@ class DynamoDBStorage {
     const record = await this.client
       .get({
         TableName: `Sessions-${environment()}`,
+        ConsistentRead: true,
         Key: {
           key
         }
@@ -125,7 +128,17 @@ class DynamoDBStorage {
    * @returns {Promise<import('./index').StoredUser | null>}
    */
   async getUserByKey(key) {
-    throw new Error('No implementation')
+    const record = await this.client
+      .get({
+        TableName: `Users-${environment()}`,
+        ConsistentRead: true,
+        Key: {
+          key
+        }
+      })
+      .promise()
+    if (!record.Item) return null
+    return /** @type {import('./index').StoredUser} */ (record.Item)
   }
 
   /**
@@ -134,7 +147,32 @@ class DynamoDBStorage {
    * @returns {Promise<import('./index').StoredUser | null>}
    */
   async getUserByEmail(email) {
-    throw new Error('No implementation')
+    const table = `Users-${environment()}`
+    const records = await this.client
+      .query({
+        TableName: table,
+        IndexName: 'EmailIndex',
+        KeyConditionExpression: 'email = :email',
+        ExpressionAttributeValues: {
+          ':email': email
+        },
+        Limit: 1
+      })
+      .promise()
+    if (!records.Items || records.Items.length === 0) {
+      return null
+    }
+
+    const key = records.Items[0].key
+    const record = await this.client
+      .get({
+        TableName: table,
+        Key: {
+          key
+        }
+      })
+      .promise()
+    return /** @type {import('./index').StoredUser} */ (record.Item)
   }
 
   /**
@@ -145,7 +183,32 @@ class DynamoDBStorage {
    * @returns {Promise<import('./index').StoredUser | null>}
    */
   async createUser(email, salt, hash) {
-    throw new Error('No implementation')
+    const now = Date.now()
+    const key = uuid()
+    await this.client
+      .put({
+        TableName: `Users-${environment()}`,
+        Item: {
+          key,
+          email,
+          salt,
+          hash,
+
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null
+        }
+      })
+      .promise()
+    return {
+      key,
+      email,
+      salt,
+      hash,
+      createdAt: now,
+      updatedAt: now,
+      deletedAt: null
+    }
   }
 }
 

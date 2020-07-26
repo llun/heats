@@ -6,7 +6,7 @@ type StoredUser = User & {
 
   createdAt: number
   updatedAt: number
-  deletedAt: number
+  deletedAt: number | null
 }
 
 export interface Storage {
