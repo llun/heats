@@ -7,12 +7,27 @@ provider:
   stage: ${opt:stage, 'dev'}
   runtime: nodejs12.x
   region: ap-southeast-1
+  memorySize: 512
+  versionFunctions: false
   environment:
     SESSION_SECRET: ${param:SESSION_SECRET}
     ENVIRONMENT: ${opt:stage}
     DYNAMODB: '1'
   httpApi:
     payload: '1.0'
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - dynamodb:DescribeTable
+        - dynamodb:Query
+        - dynamodb:Scan
+        - dynamodb:GetItem
+        - dynamodb:PutItem
+        - dynamodb:UpdateItem
+        - dynamodb:DeleteItem
+      Resource:
+        - 'arn:aws:dynamodb:*:*:table/Sessions-*'
+        - 'arn:aws:dynamodb:*:*:table/Users-*'
 
 functions:
   serve:

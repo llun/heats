@@ -29,9 +29,13 @@ async function getLayers(map) {
 
 window.onload = () => {
   // @ts-ignore
+  mapboxgl.accessToken =
+    'pk.eyJ1IjoibGx1biIsImEiOiJja2FqN2k2djIwNDU5MnlvNjR4YXRrMzFsIn0.Oir7SYHkVKBlgbPHldtRGQ'
+
+  // @ts-ignore
   var map = new mapboxgl.Map({
     container: 'map',
-    style: 'https://map.llun.dev/styles/klokantech-basic/style.json',
+    style: 'mapbox://styles/mapbox/streets-v11',
     center: [103.8198, 1.3521],
     zoom: 11
   })
