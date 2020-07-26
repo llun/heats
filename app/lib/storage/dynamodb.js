@@ -1,9 +1,15 @@
 // @ts-check
+const AWS = require('aws-sdk')
+const { environment } = require('../utils')
 
 class DynamoDBStorage {
-  constructor() {}
+  constructor() {
+    this.client = new AWS.DynamoDB.DocumentClient()
+  }
 
-  async close() {}
+  async close() {
+    console.log('close: do nothing')
+  }
 
   /**
    *
@@ -52,7 +58,20 @@ class DynamoDBStorage {
    * @return {Promise<import('../types').Session | null>}
    */
   async getSession(key) {
-    return null
+    const record = await this.client
+      .get({
+        TableName: `Sessions-${environment()}`,
+        Key: {
+          key
+        }
+      })
+      .promise()
+    if (!record.Item) {
+      return null
+    }
+
+    const data = record.Item.data
+    return JSON.parse(data)
   }
 
   /**
@@ -60,14 +79,41 @@ class DynamoDBStorage {
    * @param {string} key
    * @param {any} data
    */
-  async updateSession(key, data) {}
+  async updateSession(key, data) {
+    const now = Date.now()
+    await this.client
+      .put({
+        TableName: `Sessions-${environment()}`,
+        Item: {
+          key,
+          data: JSON.stringify(data),
+          userId: data && data.passport && data.passport.user,
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null
+        }
+      })
+      .promise()
+  }
 
   /**
    *
    * @param {string} key
    */
   async destroySession(key) {
-    throw new Error('No implementation')
+    const now = Date.now()
+    await this.client
+      .update({
+        TableName: `Sessions-${environment()}`,
+        Key: {
+          key
+        },
+        UpdateExpression: 'set deletedAt = :now',
+        ExpressionAttributeValues: {
+          ':now': now
+        }
+      })
+      .promise()
   }
 
   /**

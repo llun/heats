@@ -186,7 +186,7 @@ class SQLStorage {
    * @param {string} key
    */
   async destroySession(key) {
-    const now = new Date()
+    const now = Date.now()
     await this.db('sessions').where('key', key).update({
       deleted_at: now
     })
