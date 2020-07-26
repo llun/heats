@@ -21,16 +21,16 @@ function getParser(buffer, filename) {
  * @param {import('../lib/types').AppContext} ctx
  */
 async function createActivity(ctx) {
-  const buffer = ctx.file.buffer
-  const parser = getParser(buffer, ctx.file.originalname)
-  if (!parser) {
-    ctx.flash('alert-danger', 'Unsupported file')
-    ctx.redirect('/activities/upload')
-    return
-  }
+  // const buffer = ctx.file.buffer
+  // const parser = getParser(buffer, ctx.file.originalname)
+  // if (!parser) {
+  //   ctx.flash('alert-danger', 'Unsupported file')
+  //   ctx.redirect('/activities/upload')
+  //   return
+  // }
 
-  await parser(buffer, ctx.file.originalname)
-  ctx.flash('alert-success', 'Your file will get process soon')
+  // await parser(buffer, ctx.file.originalname)
+  // ctx.flash('alert-success', 'Your file will get process soon')
   ctx.redirect('/app')
 }
 exports.createActivity = createActivity

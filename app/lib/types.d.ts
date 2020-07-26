@@ -1,6 +1,5 @@
 import Router, { RouterContext } from '@koa/router'
-import { File } from '@koa/multer'
-import { Storage } from './storage'
+import { DefaultContext } from 'koa'
 
 export type Point = {
   latitude: number
@@ -40,14 +39,12 @@ type FlashType =
   | 'alert-dark'
 export type AppContext = RouterContext & {
   flash: (type: FlashType, message: string) => void
-  file: File
 }
 
 export type AppRouter = Router<
   any,
-  {
+  DefaultContext & {
     flash: (type: FlashType, message: string) => void
     logout: () => Promise<void>
-    file: File
   }
 >
