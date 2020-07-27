@@ -8,7 +8,7 @@ const { renderPage } = require('./tools')
  * @returns {import('@koa/router')}
  */
 exports.routes = (passport) => {
-  /** @type {import('../lib/types').AppRouter} */
+  /** @type {import('../types').AppRouter} */
   const router = new Router()
 
   router.get('/', renderPage('app.njk'))

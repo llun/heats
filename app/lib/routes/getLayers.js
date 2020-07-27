@@ -3,7 +3,7 @@ const fs = require('fs')
 const path = require('path')
 
 module.exports = async function (ctx) {
-  const directory = path.join(`${__dirname}/../lib/tasks/users/1`)
+  const directory = path.join(`${__dirname}/../tasks/users/1`)
   try {
     const bounds = fs.readdirSync(directory)
     ctx.body = {

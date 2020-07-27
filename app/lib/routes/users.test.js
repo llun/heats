@@ -1,12 +1,12 @@
 const test = require('ava')
 const sinon = require('sinon')
 
-const SQLStorage = require('../lib/storage/sql')
+const SQLStorage = require('../storage/sql')
 const {
   loadMigrations,
   createKoaContext,
   loadFixtures
-} = require('../lib/testUtils')
+} = require('../testUtils')
 const { createUser } = require('./users')
 
 test.beforeEach(async (t) => {

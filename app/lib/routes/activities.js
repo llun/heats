@@ -3,13 +3,13 @@ const fs = require('fs')
 const Router = require('@koa/router')
 
 const { renderPage } = require('./tools')
-const { parseGPX, parseTCX, parseFIT } = require('../lib/parser')
+const { parseGPX, parseTCX, parseFIT } = require('../parser')
 
 /**
  *
  * @param {Buffer} buffer
  * @param {string} filename
- * @returns {import('../lib/types').Parser | null}
+ * @returns {import('../types').Parser | null}
  */
 function getParser(buffer, filename) {
   if (buffer.slice(8, 12).toString('ascii') === '.FIT') return parseFIT
@@ -20,7 +20,7 @@ function getParser(buffer, filename) {
 
 /**
  *
- * @param {import('../lib/types').AppContext} ctx
+ * @param {import('../types').AppContext} ctx
  */
 async function createActivity(ctx) {
   if (!ctx.files || !ctx.files.upload) {
@@ -50,7 +50,7 @@ exports.createActivity = createActivity
  * @returns {import('@koa/router')}
  */
 exports.routes = (passport) => {
-  /** @type {import('../lib/types').AppRouter} */
+  /** @type {import('../types').AppRouter} */
   const router = new Router()
   router.post('/', createActivity)
   router.get('/upload', renderPage('upload.njk'))

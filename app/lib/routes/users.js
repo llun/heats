@@ -1,15 +1,15 @@
 // @ts-check
 const crypto = require('crypto')
 const Router = require('@koa/router')
-const { authenticatedGuard, unauthenticatedGuard } = require('../lib/auth')
+const { authenticatedGuard, unauthenticatedGuard } = require('../auth')
 
 /**
  *
- * @param {import('../lib/types').AppContext} ctx
+ * @param {import('../types').AppContext} ctx
  */
 async function createUser(ctx) {
   const { username, password } = ctx.request.body
-  /** @type {import('../lib/storage').Storage} */
+  /** @type {import('../storage').Storage} */
   const storage = ctx.state.storage
 
   if (!password || password.trim().length === 0) {
@@ -39,7 +39,7 @@ exports.createUser = createUser
  * @returns {import('@koa/router')}
  */
 exports.routes = (passport) => {
-  /** @type {import('../lib/types').AppRouter} */
+  /** @type {import('../types').AppRouter} */
   const router = new Router()
 
   router.post('/', unauthenticatedGuard, createUser)

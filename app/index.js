@@ -13,7 +13,7 @@ const multiparty = require('multiparty')
 const { setup } = require('./lib/auth')
 const { getStorage } = require('./lib/storage')
 
-const { routes } = require('./routes')
+const { routes } = require('./lib/routes')
 
 /**
  * @returns {import('koa')}
