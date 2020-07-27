@@ -3,13 +3,13 @@ const { unzipSync } = require('zlib')
 const fs = require('fs')
 const path = require('path')
 const JSZip = require('jszip')
-const SQLStorage = require('../storage/sql')
-const { parseGPX, parseTCX, parseFIT } = require('../parser')
+const { getStorage } = require('../../storage')
+const { parseGPX, parseTCX, parseFIT } = require('../../parser')
 
 /**
  *
  * @param {string} path
- * @returns {import('../types').Parser | null}
+ * @returns {import('../../types').Parser | null}
  */
 function getParser(path) {
   if (path.endsWith('gpx')) return parseGPX
@@ -19,10 +19,10 @@ function getParser(path) {
 }
 
 async function run() {
-  const storage = new SQLStorage()
+  const storage = await getStorage()
   try {
     const buffer = fs.readFileSync(
-      path.resolve(`${__dirname}/../../export_8734755.zip`)
+      path.resolve(`${__dirname}/../../../export_8734755.zip`)
     )
     const zip = await JSZip.loadAsync(buffer)
     const activities = Object.keys(zip.files).filter(

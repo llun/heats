@@ -1,10 +1,11 @@
 // @ts-check
 const fs = require('fs')
 const MapHeat = require('mapheat')
-const SQLStorage = require('../storage/sql')
+const { getStorage } = require('../../storage')
+const SQLStorage = require('../../storage/sql')
 
 async function run() {
-  const storage = new SQLStorage()
+  const storage = await getStorage()
   try {
     const points = await storage.getPoints(1)
     const blocks = /** @type {import('mapheat/types').Blocks} */ ({})
