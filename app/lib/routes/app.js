@@ -11,7 +11,7 @@ exports.routes = (passport) => {
   /** @type {import('../types').AppRouter} */
   const router = new Router()
 
-  router.get('/', renderPage('app.njk'))
+  router.get('/', renderPage('authenticated/app.njk'))
 
   return router
 }

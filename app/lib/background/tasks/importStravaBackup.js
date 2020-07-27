@@ -1,4 +1,8 @@
 // @ts-check
+/**
+ * @typedef {'importStravaBackup'} TaskName
+ */
+
 const { unzipSync } = require('zlib')
 const fs = require('fs')
 const path = require('path')

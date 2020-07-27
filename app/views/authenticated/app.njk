@@ -8,10 +8,7 @@
 {% endblock %}
 
 {% block navigation %}
-<div class="navbar-nav">
-  <a class="nav-link" href="/activities/upload">Upload</a>
-  <a class="nav-link" href="/users/signout">Sign out</a>
-</div>
+  {% include "authenticated/navigation.njk" %}
 {% endblock %}
 
 {% block content %}

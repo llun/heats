@@ -4,21 +4,18 @@
 {% endblock %}
 
 {% block navigation %}
-<div class="navbar-nav">
-  <a class="nav-link" href="/activities/upload">Upload</a>
-  <a class="nav-link" href="/users/signout">Sign out</a>
-</div>
+  {% include "authenticated/navigation.njk" %}
 {% endblock %}
 
 {% block content %}
-<div class="container">
+<div class="container mt-2">
   {% if flash %}
   <div class="alert {{ 'alert-danger' if flash.type == 'error' else flash.type }}" role="alert">
     {{ flash.message }}
   </div>
   {% endif %}
   <form action="/activities" method="post" enctype="multipart/form-data">
-    <div class="mb-3">
+    <div class="mb-2">
       <label for="upload" class="form-label">
         GPX, TCX or Fit file
       </label>

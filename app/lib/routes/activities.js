@@ -53,7 +53,7 @@ exports.routes = (passport) => {
   /** @type {import('../types').AppRouter} */
   const router = new Router()
   router.post('/', createActivity)
-  router.get('/upload', renderPage('upload.njk'))
+  router.get('/import', renderPage('authenticated/import.njk'))
 
   return router
 }
