@@ -4,5 +4,7 @@ class LocalBackground {
    *
    * @param {import('./index').Task} task
    */
-  runTask(task) {}
+  runTask(task) {
+    return null
+  }
 }

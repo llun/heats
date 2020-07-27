@@ -149,7 +149,9 @@ exports.parseFIT = parseFIT
 /**
  * @type {import('./types').Parser}
  */
-const parseStravaBackup = async (buffer, filename) => {}
+const parseStravaBackup = async (buffer, filename) => {
+  return []
+}
 exports.parseStravaBackup = parseStravaBackup
 
 /**
