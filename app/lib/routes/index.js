@@ -2,7 +2,7 @@
 const Router = require('@koa/router')
 
 const { renderPage } = require('./tools')
-const { authenticatedGuard, unauthenticatedGuard } = require('../lib/auth')
+const { authenticatedGuard, unauthenticatedGuard } = require('../auth')
 const { routes: users } = require('./users')
 const { routes: app } = require('./app')
 const { routes: activities } = require('./activities')
