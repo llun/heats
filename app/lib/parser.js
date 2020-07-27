@@ -145,3 +145,39 @@ const parseFIT = async (buffer, filename) => {
   ]
 }
 exports.parseFIT = parseFIT
+
+/**
+ * @type {import('./types').Parser}
+ */
+const parseStravaBackup = async (buffer, filename) => {}
+exports.parseStravaBackup = parseStravaBackup
+
+/**
+ *
+ * @param {Buffer} buffer
+ * @param {string} filename
+ * @returns {boolean}
+ */
+function isSupportedFile(buffer, filename) {
+  if (buffer.slice(8, 12).toString('ascii') === '.FIT') return true
+  else if (filename.endsWith('gpx')) return true
+  else if (filename.endsWith('tcx')) return true
+  else if (filename.endsWith('zip')) return true
+  else return false
+}
+exports.isSupportedFile = isSupportedFile
+
+/**
+ *
+ * @param {Buffer} buffer
+ * @param {string} filename
+ * @returns {import('./types').Parser | null}
+ */
+function getParser(buffer, filename) {
+  if (buffer.slice(8, 12).toString('ascii') === '.FIT') return parseFIT
+  else if (filename.endsWith('gpx')) return parseGPX
+  else if (filename.endsWith('tcx')) return parseTCX
+  else if (filename.endsWith('zip')) return parseStravaBackup
+  else return null
+}
+exports.getParser = getParser
