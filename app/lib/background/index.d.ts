@@ -5,6 +5,6 @@ export type Task = {
   data: any
 }
 
-export interface Background {
+export interface BackgroundRunner {
   runTask(task: Task): Promise<void>
 }
