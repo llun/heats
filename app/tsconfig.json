@@ -9,12 +9,6 @@
     "strictBindCallApply": true,
     "strictFunctionTypes": true
   },
-  "include": [
-    "./**/*.js",
-    "./**/*.ts"
-  ],
-  "exclude": [
-    "node_modules",
-    "index.js"
-  ]
+  "include": ["./**/*.js", "./**/*.ts"],
+  "exclude": ["node_modules", "index.js"]
 }

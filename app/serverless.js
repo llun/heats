@@ -4,10 +4,10 @@
  * @typedef {import('aws-lambda').Context} Context
  */
 const serverless = require('serverless-http')
-const main = require('./index')
+const web = require('./web')
 const { getStorage } = require('./lib/storage')
 
-const app = main()
+const app = web()
 const handler = serverless(app)
 exports.handler = handler
 

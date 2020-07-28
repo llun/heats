@@ -3,7 +3,7 @@ const http = require('http')
 const dotenv = require('dotenv')
 dotenv.config()
 
-const app = require('./index')
+const app = require('./web')
 
 /**
  *
