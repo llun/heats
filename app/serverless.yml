@@ -13,6 +13,7 @@ provider:
   environment:
     ENVIRONMENT: ${opt:stage}
     DYNAMODB: '1'
+    S3_BUCKET: heats-${opt:stage}
   httpApi:
     payload: '1.0'
   iamRoleStatements:
