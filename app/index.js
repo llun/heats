@@ -12,6 +12,7 @@ const multiparty = require('multiparty')
 
 const { setup } = require('./lib/auth')
 const { getStorage } = require('./lib/storage')
+const { getFileLoader } = require('./lib/file')
 
 const { routes } = require('./lib/routes')
 
@@ -92,9 +93,14 @@ module.exports = function main() {
     )
     .use(csrf)
     .use(async (ctx, next) => {
-      const storage = await getStorage()
-      ctx.state.storage = storage
       ctx.state.csrf = ctx.csrf
+
+      const fileLoader = await getFileLoader()
+      ctx.fileLoader = fileLoader
+
+      const storage = await getStorage()
+      ctx.storage = storage
+
       /**
        *
        * @param {import('./lib/types').FlashType} type

@@ -24,6 +24,9 @@ async function createActivity(ctx) {
     return
   }
 
+  const fileLoader = ctx.fileLoader
+  await fileLoader.save(buffer, upload.originalFilename)
+
   ctx.flash('alert-success', 'Your file will get process soon')
   ctx.redirect('/app')
 }

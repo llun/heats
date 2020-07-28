@@ -9,8 +9,7 @@ const { authenticatedGuard, unauthenticatedGuard } = require('../auth')
  */
 async function createUser(ctx) {
   const { username, password } = ctx.request.body
-  /** @type {import('../storage').Storage} */
-  const storage = ctx.state.storage
+  const storage = ctx.storage
 
   if (!password || password.trim().length === 0) {
     ctx.flash('alert-danger', 'Password is required')

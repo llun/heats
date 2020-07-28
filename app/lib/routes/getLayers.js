@@ -14,8 +14,6 @@ module.exports = async function (ctx) {
       }
     }
   } catch (error) {
-    console.log(error.message)
-    console.log(error.stack)
     ctx.body = {
       success: true,
       result: {
