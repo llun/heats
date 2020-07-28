@@ -56,8 +56,9 @@ exports.loadFixtures = loadFixtures
  */
 function createKoaContext({ storage, body }) {
   return {
+    storage,
     request: { body },
-    state: { storage },
+    state: {},
     flash: sinon.stub(),
     redirect: sinon.stub()
   }
