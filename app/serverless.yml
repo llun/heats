@@ -44,7 +44,7 @@ functions:
     name: heats-background-${opt:stage}
     handler: background.entry
     memorySize: 1024
-    provisionedConcurrency: 5
+    reservedConcurrency: 5
     timeout: 300
     events:
       - sqs:
