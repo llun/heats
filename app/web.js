@@ -15,6 +15,7 @@ const { getStorage } = require('./lib/storage')
 const { getFileLoader } = require('./lib/file')
 
 const { routes } = require('./lib/routes')
+const { getBackgroundRunner } = require('./lib/background')
 
 /**
  * @returns {import('koa')}
@@ -100,6 +101,9 @@ module.exports = function main() {
 
       const storage = await getStorage()
       ctx.storage = storage
+
+      const backgroundRunner = await getBackgroundRunner()
+      ctx.backgroundRunner = backgroundRunner
 
       /**
        *

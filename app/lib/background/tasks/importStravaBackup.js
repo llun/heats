@@ -1,67 +1,37 @@
 // @ts-check
 /**
  * @typedef {'importStravaBackup'} TaskName
+ * @typedef {{ name: 'importStravaBackup', data: { path: string, userKey: string }}} Task
  */
 
-const { unzipSync } = require('zlib')
-const fs = require('fs')
 const path = require('path')
-const JSZip = require('jszip')
 const { getStorage } = require('../../storage')
-const { parseGPX, parseTCX, parseFIT } = require('../../parser')
-
+const { getParser } = require('../../parser')
+const { getFileLoader } = require('../../file')
 /**
  *
- * @param {string} path
- * @returns {import('../../types').Parser | null}
+ * @param {Task} event
  */
-function getParser(path) {
-  if (path.endsWith('gpx')) return parseGPX
-  else if (path.endsWith('tcx') || path.endsWith('tcx.gz')) return parseTCX
-  else if (path.endsWith('fit') || path.endsWith('fit.gz')) return parseFIT
-  else return null
-}
-
-async function run() {
+async function run(event) {
   const storage = await getStorage()
+  const file = getFileLoader()
+
   try {
-    const buffer = fs.readFileSync(
-      path.resolve(`${__dirname}/../../../export_8734755.zip`)
-    )
-    const zip = await JSZip.loadAsync(buffer)
-    const activities = Object.keys(zip.files).filter(
-      (name) =>
-        name.startsWith('activities/') &&
-        (name.endsWith('.tcx.gz') ||
-          name.endsWith('.gpx') ||
-          name.endsWith('.fit.gz') ||
-          name.endsWith('.fit'))
-    )
+    const buffer = await file.load(event.data.path)
+    if (!buffer) {
+      throw new Error(`Fail to load ${event.data.path}`)
+    }
+    const fileName = path.basename(event.data.path)
+    const parser = getParser(buffer, fileName)
+    if (!parser) {
+      throw new Error('Unsupported file')
+    }
 
+    const activities = await parser(buffer, fileName)
     for (const activity of activities) {
-      const parser = getParser(activity)
-      if (!parser) {
-        continue
-      }
-
-      const raw = await zip.files[activity].async('nodebuffer')
-      const data = activity.endsWith('gz') ? unzipSync(raw) : raw
-      const parsedActivities = await parser(data, path.basename(activity))
-      for (const parsedActivity of parsedActivities) {
-        await storage.addActivity(1, parsedActivity)
-        console.log(`Added ${activity}`)
-      }
     }
   } finally {
     await storage.close()
   }
 }
-
-run()
-  .then(() => {
-    console.log('Done')
-  })
-  .catch((error) => {
-    console.error(error.message)
-    console.error(error.stack)
-  })
+exports.run = run

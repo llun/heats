@@ -4,7 +4,9 @@ class LocalBackground {
    *
    * @param {import('./index').Task} task
    */
-  runTask(task) {
-    return null
+  async runTask(task) {
+    const { run } = require(`./tasks/${task.name}`)
+    await run(task)
   }
 }
+module.exports = LocalBackground

@@ -3,6 +3,7 @@ import { DefaultContext } from 'koa'
 import { File } from 'multiparty'
 import { Storage } from './storage'
 import { FileLoader } from './file'
+import { BackgroundRunner } from './background'
 
 export type Point = {
   latitude: number
@@ -43,6 +44,7 @@ type FlashType =
 export type AppContext = RouterContext & {
   storage: Storage
   fileLoader: FileLoader
+  backgroundRunner: BackgroundRunner
   flash: (type: FlashType, message: string) => void
   files?: {
     [key in string]: File[]
@@ -54,6 +56,7 @@ export type AppRouter = Router<
   DefaultContext & {
     storage: Storage
     fileLoader: FileLoader
+    backgroundRunner: BackgroundRunner
     flash: (type: FlashType, message: string) => void
     logout: () => Promise<void>
     files?: {

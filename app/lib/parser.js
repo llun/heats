@@ -2,6 +2,9 @@
 const _ = require('lodash')
 const XMLParser = require('fast-xml-parser')
 const FitParser = require('fit-file-parser').default
+const JSZip = require('jszip')
+const { unzipSync } = require('zlib')
+const path = require('path')
 
 /**
  * @type {import('./types').Parser}
@@ -149,8 +152,31 @@ exports.parseFIT = parseFIT
 /**
  * @type {import('./types').Parser}
  */
-const parseStravaBackup = async (buffer, filename) => {
-  return []
+const parseStravaBackup = async (buffer) => {
+  const zip = await JSZip.loadAsync(buffer)
+  const activities = Object.keys(zip.files).filter(
+    (name) =>
+      name.startsWith('activities/') &&
+      (name.endsWith('.tcx.gz') ||
+        name.endsWith('.gpx') ||
+        name.endsWith('.fit.gz') ||
+        name.endsWith('.fit'))
+  )
+
+  /** @type {import('./types').Activity[]} */
+  const result = []
+  for (const activity of activities) {
+    const raw = await zip.files[activity].async('nodebuffer')
+    const data = activity.endsWith('gz') ? unzipSync(raw) : raw
+    const parser = getParser(data, activity)
+    if (!parser) {
+      continue
+    }
+
+    const parsedActivities = await parser(data, path.basename(activity))
+    result.push(...parsedActivities)
+  }
+  return result
 }
 exports.parseStravaBackup = parseStravaBackup
 
@@ -176,10 +202,10 @@ exports.isSupportedFile = isSupportedFile
  * @returns {import('./types').Parser | null}
  */
 function getParser(buffer, filename) {
-  if (buffer.slice(8, 12).toString('ascii') === '.FIT') return parseFIT
-  else if (filename.endsWith('gpx')) return parseGPX
+  if (filename.endsWith('gpx')) return parseGPX
   else if (filename.endsWith('tcx')) return parseTCX
   else if (filename.endsWith('zip')) return parseStravaBackup
+  else if (buffer.slice(8, 12).toString('ascii') === '.FIT') return parseFIT
   else return null
 }
 exports.getParser = getParser

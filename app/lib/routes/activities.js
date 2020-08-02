@@ -25,7 +25,18 @@ async function createActivity(ctx) {
   }
 
   const fileLoader = ctx.fileLoader
-  await fileLoader.save(buffer, upload.originalFilename)
+  const path = await fileLoader.save(buffer, upload.originalFilename)
+  if (!path) {
+    ctx.flash('alert-danger', 'Fail to save activity file')
+    ctx.redirect('/activities/import')
+    return
+  }
+
+  const backgroundRunner = ctx.backgroundRunner
+  await backgroundRunner.runTask({
+    name: 'importStravaBackup',
+    data: { path, userKey: ctx.state.user.key }
+  })
 
   ctx.flash('alert-success', 'Your file will get process soon')
   ctx.redirect('/app')
