@@ -15,39 +15,11 @@ class DynamoDBStorage {
 
   /**
    *
-   * @param {number} userId
+   * @param {string} userKey
    * @param {import('../types').Activity} activity
    */
-  async addActivity(userId, activity) {
+  async addActivity(userKey, activity) {
     throw new Error('No implementation')
-  }
-
-  /**
-   *
-   * @param {number} userId
-   * @param {number} from
-   * @param {number} to
-   * @returns {Promise<import('../types').Point[]>}
-   */
-  async getPointsBetweenDate(userId, from, to) {
-    throw new Error('No implementation')
-  }
-
-  /**
-   *
-   * @param {number} userId
-   * @returns {Promise<import('../types').Point[]>}
-   */
-  async getPoints(userId) {
-    throw new Error('No implementation')
-  }
-
-  /**
-   *
-   * @param {number} userId
-   */
-  async getActivities(userId) {
-    return []
   }
 
   /**

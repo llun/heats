@@ -86,6 +86,45 @@ resources:
           - AttributeName: key
             KeyType: HASH
         BillingMode: PAY_PER_REQUEST
+    ActivityTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: Activities-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+          - AttributeName: userKey
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+        GlobalSecondaryIndexes:
+          - IndexName: UserActivitiesIndex
+            KeySchema:
+              - AttributeName: userKey
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
+            Projection:
+              ProjectionType: KEYS_ONLY
+        BillingMode: PAY_PER_REQUEST
+    ActivityPointTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: ActivityPoints-${opt:stage}
+        AttributeDefinitions:
+          - AttributeName: activityKey
+            AttributeType: S
+          - AttributeName: timestamp
+            AttributeType: N
+        KeySchema:
+          - AttributeName: activityKey
+            KeyType: HASH
+          - AttributeName: timestamp
+            KeyType: RANGE
+        BillingMode: PAY_PER_REQUEST
     BackgroundQueue:
       Type: 'AWS::SQS::Queue'
       Properties:

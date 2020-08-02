@@ -48,11 +48,11 @@ class SQLStorage {
 
   /**
    *
-   * @param {number} userId
+   * @param {string} userKey
    * @param {import('../types').Activity} activity
    */
-  async addActivity(userId, activity) {
-    const { points, file } = activity
+  async addActivity(userKey, activity) {
+    const { points } = activity
     try {
       await this.db.transaction(async (trx) => {
         try {
@@ -64,7 +64,7 @@ class SQLStorage {
               file: activity.file,
               startedAt: activity.startedAt,
               createdWith: activity.createdWith,
-              userId,
+              userId: userKey,
               createdAt: now,
               updatedAt: now
             })
@@ -82,7 +82,7 @@ class SQLStorage {
                   timestamp: point.timestamp,
                   createdAt: now,
                   updatedAt: now,
-                  userId,
+                  userId: userKey,
                   activityId: insertedActivities[0]
                 })
             )

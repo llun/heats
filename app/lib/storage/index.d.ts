@@ -10,14 +10,14 @@ type StoredUser = User & {
 }
 
 export interface Storage {
-  addActivity(userId: number, activity: Activity): Promise<void>
-  getActivities(userId: number): Promise<Activity[]>
-  getPoints(userId: number): Promise<Point[]>
-  getPointsBetweenDate(
-    userId: number,
-    from: number,
-    to: number
-  ): Promise<Point[]>
+  addActivity(userKey: string, activity: Activity): Promise<void>
+  // getActivities(userId: number): Promise<Activity[]>
+  // getPoints(userId: number): Promise<Point[]>
+  // getPointsBetweenDate(
+  //   userId: number,
+  //   from: number,
+  //   to: number
+  // ): Promise<Point[]>
 
   getSession(key: string): Promise<Session | null>
   updateSession(key: string, data: any): Promise<void>
