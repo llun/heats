@@ -28,9 +28,15 @@ provider:
         - dynamodb:PutItem
         - dynamodb:UpdateItem
         - dynamodb:DeleteItem
+        - sqs:*
+        - s3:*
       Resource:
         - 'arn:aws:dynamodb:*:*:table/Sessions-*'
         - 'arn:aws:dynamodb:*:*:table/Users-*'
+        - 'arn:aws:dynamodb:*:*:table/Activities-*'
+        - 'arn:aws:dynamodb:*:*:table/ActivityPoints-*'
+        - 'arn:aws:sqs:*:*:Heats-Default-${opt:stage}'
+        - 'arn:aws:s3:::heats-${opt:stage}'
 
 functions:
   serve:
