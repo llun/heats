@@ -5,3 +5,5 @@ export type Task = ImportStravaBackupTask
 export interface BackgroundRunner {
   runTask(task: Task): Promise<void>
 }
+
+export const getBackgroundRunner: () => BackgroundRunner

@@ -2,7 +2,6 @@
 const AWS = require('aws-sdk')
 const { v4: uuid } = require('uuid')
 const { environment } = require('../utils')
-const { now } = require('lodash')
 
 class DynamoDBStorage {
   constructor() {
@@ -19,7 +18,47 @@ class DynamoDBStorage {
    * @param {import('../types').Activity} activity
    */
   async addActivity(userKey, activity) {
-    throw new Error('No implementation')
+    const { points } = activity
+    const now = Date.now()
+    const key = uuid()
+    await this.client
+      .put({
+        TableName: `Activities-${environment()}`,
+        Item: {
+          key,
+          name: activity.name,
+          file: activity.file,
+          startedAt: activity.startedAt,
+          createdWith: activity.createdWith,
+          userKey,
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null
+        }
+      })
+      .promise()
+    await Promise.all(
+      points.map(async (point, index) => {
+        this.client
+          .put({
+            TableName: `ActivityPoints-${environment()}`,
+            Item: {
+              activityKey: key,
+              latitude: point.latitude,
+              longitude: point.longitude,
+              altitude:
+                typeof point.altitude === 'number'
+                  ? point.altitude
+                  : (points[index - 1] && points[index - 1].altitude) || 0,
+              timestamp: point.timestamp,
+              userKey,
+              createdAt: now,
+              updatedAt: now
+            }
+          })
+          .promise()
+      })
+    )
   }
 
   /**
