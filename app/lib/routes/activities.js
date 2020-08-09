@@ -25,7 +25,7 @@ async function createActivity(ctx) {
   }
 
   const fileLoader = ctx.fileLoader
-  const path = await fileLoader.save(buffer, upload.originalFilename)
+  const path = await fileLoader.save(buffer, 'import', upload.originalFilename)
   if (!path) {
     ctx.flash('alert-danger', 'Fail to save activity file')
     ctx.redirect('/activities/import')
