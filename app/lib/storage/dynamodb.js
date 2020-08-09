@@ -64,6 +64,29 @@ class DynamoDBStorage {
   }
 
   /**
+   *
+   * @param {string} userKey
+   */
+  async getPoints(userKey) {
+    let nextEvaluateKey = null
+    do {
+      const records = await this.client
+        .query({
+          TableName: `ActivityPoints-${environment()}`,
+          IndexName: 'UserPointsIndex',
+          KeyConditionExpression: 'userKey = :userKey',
+          ExpressionAttributeValues: {
+            ':userKey': userKey
+          }
+        })
+        .promise()
+      nextEvaluateKey = records.LastEvaluatedKey
+    } while (nextEvaluateKey)
+
+    return []
+  }
+
+  /**
    * Session methods
    */
 

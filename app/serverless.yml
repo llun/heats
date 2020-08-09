@@ -124,6 +124,8 @@ resources:
         AttributeDefinitions:
           - AttributeName: activityKey
             AttributeType: S
+          - AttributeName: userKey
+            AttributeType: S
           - AttributeName: timestamp
             AttributeType: N
         KeySchema:
@@ -131,6 +133,15 @@ resources:
             KeyType: HASH
           - AttributeName: timestamp
             KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: UserPointsIndex
+            KeySchema:
+              - AttributeName: userKey
+                KeyType: HASH
+              - AttributeName: timestamp
+                KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
     BackgroundQueue:
       Type: 'AWS::SQS::Queue'

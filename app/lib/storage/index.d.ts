@@ -12,7 +12,7 @@ type StoredUser = User & {
 export interface Storage {
   addActivity(userKey: string, activity: Activity): Promise<void>
   // getActivities(userId: number): Promise<Activity[]>
-  // getPoints(userId: number): Promise<Point[]>
+  getPoints(userKey: string): Promise<Point[]>
   // getPointsBetweenDate(
   //   userId: number,
   //   from: number,

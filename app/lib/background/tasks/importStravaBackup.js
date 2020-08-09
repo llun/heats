@@ -6,6 +6,7 @@
 
 const path = require('path')
 const { getStorage } = require('../../storage')
+const { getBackgroundRunner } = require('../../background')
 const { getParser } = require('../../parser')
 const { getFileLoader } = require('../../file')
 /**
@@ -15,6 +16,7 @@ const { getFileLoader } = require('../../file')
 async function run(event) {
   const storage = await getStorage()
   const file = getFileLoader()
+  const backgroundRunner = getBackgroundRunner()
 
   try {
     const buffer = await file.load(event.data.path)
