@@ -37,28 +37,30 @@ class DynamoDBStorage {
         }
       })
       .promise()
-    await Promise.all(
-      points.map(async (point, index) => {
-        this.client
-          .put({
-            TableName: `ActivityPoints-${environment()}`,
-            Item: {
-              activityKey: key,
-              latitude: point.latitude,
-              longitude: point.longitude,
-              altitude:
-                typeof point.altitude === 'number'
-                  ? point.altitude
-                  : (points[index - 1] && points[index - 1].altitude) || 0,
-              timestamp: point.timestamp,
-              userKey,
-              createdAt: now,
-              updatedAt: now
-            }
-          })
-          .promise()
-      })
-    )
+    for (let index = 0; index < points.length; index++) {
+      const point = points[index]
+      await this.client
+        .put({
+          TableName: `ActivityPoints-${environment()}`,
+          Item: {
+            activityKey: key,
+            latitude: point.latitude,
+            longitude: point.longitude,
+            altitude:
+              typeof point.altitude === 'number'
+                ? point.altitude
+                : (points[index - 1] && points[index - 1].altitude) || 0,
+            timestamp: point.timestamp,
+            userKey,
+            createdAt: now,
+            updatedAt: now
+          }
+        })
+        .promise()
+      console.log(
+        `Inserting point ${index}, [${point.latitude},${point.longitude},${point.altitude}]`
+      )
+    }
   }
 
   /**
