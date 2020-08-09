@@ -23,10 +23,11 @@ class LocalFileLoader {
   /**
    *
    * @param {Buffer} buffer
+   * @param {import('./index').FileType} type
    * @param {string} filename
    */
-  async save(buffer, filename) {
-    const fullPath = path.join(this.root, filename)
+  async save(buffer, type, filename) {
+    const fullPath = path.join(this.root, type, filename)
     try {
       fs.writeFileSync(fullPath, buffer)
     } catch (error) {

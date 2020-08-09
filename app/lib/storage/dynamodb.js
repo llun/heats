@@ -68,9 +68,10 @@ class DynamoDBStorage {
    * @param {string} userKey
    */
   async getPoints(userKey) {
+    const points = []
     let nextEvaluateKey = null
     do {
-      const records = await this.client
+      const response = await this.client
         .query({
           TableName: `ActivityPoints-${environment()}`,
           IndexName: 'UserPointsIndex',
@@ -80,9 +81,11 @@ class DynamoDBStorage {
           }
         })
         .promise()
-      nextEvaluateKey = records.LastEvaluatedKey
-    } while (nextEvaluateKey)
+      nextEvaluateKey = response.LastEvaluatedKey
 
+      const items = response.Items || []
+      points.push(...items)
+    } while (nextEvaluateKey)
     return []
   }
 

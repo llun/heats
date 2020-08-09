@@ -1,7 +1,7 @@
 // @ts-check
 /**
  * @typedef {'importStravaBackup'} TaskName
- * @typedef {{ name: 'importStravaBackup', data: { path: string, userKey: string }}} Task
+ * @typedef {{ name: TaskName, data: { path: string, userKey: string }}} Task
  */
 
 const path = require('path')
@@ -34,6 +34,10 @@ async function run(event) {
     for (const activity of activities) {
       await storage.addActivity(userKey, activity)
     }
+    await backgroundRunner.runTask({
+      name: 'generateHeatMap',
+      data: { userKey }
+    })
   } finally {
     await storage.close()
   }

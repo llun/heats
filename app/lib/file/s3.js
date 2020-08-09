@@ -14,10 +14,11 @@ class S3FileLoader {
   /**
    *
    * @param {Buffer} buffer
+   * @param {import('./index').FileType} type
    * @param {string} filename
    */
-  async save(buffer, filename) {
-    const key = `upload/${filename}`
+  async save(buffer, type, filename) {
+    const key = `${type}/${filename}`
     try {
       await this.s3
         .putObject({

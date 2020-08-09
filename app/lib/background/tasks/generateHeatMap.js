@@ -1,11 +1,12 @@
 // @ts-check
 /**
- * @typedef {'importStravaBackup'} TaskName
- * @typedef {{ name: 'importStravaBackup', data: { path: string, userKey: string }}} Task
+ * @typedef {'generateHeatMap'} TaskName
+ * @typedef {{ name: TaskName, data: { userKey: string }}} Task
  */
 const fs = require('fs')
 const MapHeat = require('mapheat')
 const { getStorage } = require('../../storage')
+const { getFileLoader } = require('../../file')
 
 async function run() {
   const storage = await getStorage()
