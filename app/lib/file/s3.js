@@ -18,14 +18,21 @@ class S3FileLoader {
    */
   async save(buffer, filename) {
     const key = `upload/${filename}`
-    await this.s3
-      .putObject({
-        Body: buffer,
-        Bucket: this.bucket,
-        Key: key
-      })
-      .promise()
-    return key
+    try {
+      await this.s3
+        .putObject({
+          Body: buffer,
+          Bucket: this.bucket,
+          Key: key
+        })
+        .promise()
+      return key
+    } catch (error) {
+      console.error(JSON.stringify({ bucket: this.bucket, key }))
+      console.error(error.message)
+      console.error(new Error().stack)
+      return null
+    }
   }
 
   /**

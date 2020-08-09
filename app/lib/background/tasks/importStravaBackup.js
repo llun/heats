@@ -27,8 +27,10 @@ async function run(event) {
       throw new Error('Unsupported file')
     }
 
+    const userKey = event.data.userKey
     const activities = await parser(buffer, fileName)
     for (const activity of activities) {
+      await storage.addActivity(userKey, activity)
     }
   } finally {
     await storage.close()
