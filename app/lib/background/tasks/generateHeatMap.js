@@ -1,4 +1,4 @@
-// @ts-check
+// @ts-nocheck
 const fs = require('fs')
 const MapHeat = require('mapheat')
 const { getStorage } = require('../../storage')
