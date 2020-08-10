@@ -29,7 +29,13 @@ async function run(task) {
     )
     for (const block of nonEmptyBlocks) {
       const canvas = instance.draw(blocks[block])
-      await fileLoader.save(canvas.toBuffer(), 'heatimage', `${block}.png`)
+      const path = await fileLoader.save(
+        canvas.toBuffer(),
+        'heatimage',
+        `${block}.png`
+      )
+      if (!path) continue
+      await storage.addHeatMapImage(userKey, path)
     }
   } finally {
     await storage.close()
