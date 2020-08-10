@@ -78,7 +78,9 @@ class DynamoDBStorage {
           KeyConditionExpression: 'userKey = :userKey',
           ExpressionAttributeValues: {
             ':userKey': userKey
-          }
+          },
+          ExclusiveStartKey: nextEvaluateKey,
+          ScanIndexForward: true
         })
         .promise()
       nextEvaluateKey = response.LastEvaluatedKey
@@ -92,9 +94,10 @@ class DynamoDBStorage {
   /**
    *
    * @param {string} userKey
+   * @param {string} boundary
    * @param {string} path
    */
-  async addHeatMapImage(userKey, path) {
+  async addHeatMapImage(userKey, boundary, path) {
     const now = Date.now()
     const key = uuid()
     await this.client
@@ -103,6 +106,7 @@ class DynamoDBStorage {
         Item: {
           key,
           userKey,
+          boundary,
           path,
           createdAt: now,
           updatedAt: now,
@@ -110,6 +114,53 @@ class DynamoDBStorage {
         }
       })
       .promise()
+  }
+
+  /**
+   *
+   * @param {string} userKey
+   * @returns {Promise<import('.').StoredHeatMap[]>}
+   */
+  async loadAllHeatMapImages(userKey) {
+    const result = []
+    let nextEvaluateKey = null
+    do {
+      const response = await this.client
+        .query({
+          TableName: `HeatMaps-${environment()}`,
+          IndexName: 'UserHeatMapsIndex',
+          KeyConditionExpression: 'userKey = :userKey',
+          ExpressionAttributeValues: {
+            ':userKey': userKey
+          },
+          ExclusiveStartKey: nextEvaluateKey,
+          ScanIndexForward: true
+        })
+        .promise()
+      nextEvaluateKey = response.LastEvaluatedKey
+      const items = response.Items || []
+      result.push(...items)
+    } while (nextEvaluateKey)
+
+    return result
+  }
+
+  /**
+   *
+   * @param {string} key
+   *
+   * @returns {Promise<import('.').StoredHeatMap | null>}
+   */
+  async getHeatMapImage(key) {
+    const record = await this.client
+      .get({
+        TableName: `HeatMaps-${environment()}`,
+        Key: {
+          key
+        }
+      })
+      .promise()
+    return /** @type {import('.').StoredHeatMap} */ (record.Item) || null
   }
 
   /**

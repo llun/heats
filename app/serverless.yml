@@ -166,6 +166,9 @@ resources:
                 KeyType: HASH
               - AttributeName: createdAt
                 KeyType: RANGE
+            Projection:
+              ProjectionType: ALL
+        BillingMode: PAY_PER_REQUEST
     BackgroundQueue:
       Type: 'AWS::SQS::Queue'
       Properties:

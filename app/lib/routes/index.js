@@ -6,9 +6,7 @@ const { authenticatedGuard, unauthenticatedGuard } = require('../auth')
 const { routes: users } = require('./users')
 const { routes: app } = require('./app')
 const { routes: activities } = require('./activities')
-
-const getLayers = require('./getLayers')
-const getLayer = require('./getLayer')
+const { routes: layers } = require('./layers')
 
 /**
  * @param {import('passport')} passport
@@ -23,9 +21,7 @@ exports.routes = (passport) => {
   router.use('/users', users(passport).routes())
   router.use('/app', authenticatedGuard, app(passport).routes())
   router.use('/activities', authenticatedGuard, activities(passport).routes())
-
-  router.get('/layers', getLayers)
-  router.get('/layers/:bound', getLayer)
+  router.use('/layers', authenticatedGuard, layers(passport).routes())
 
   return router
 }

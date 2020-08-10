@@ -3,12 +3,14 @@ async function getLayers(map) {
   const response = await fetch('/layers')
   const json = await response.json()
   const { result } = json
-  const { dir, bounds } = result
-  for (const line of bounds) {
-    const coordinates = line.split(',').map(parseFloat)
-    map.addSource(line, {
+  const { bounds } = result
+  for (const item of bounds) {
+    const key = item.key
+    const boundary = item.boundary
+    const coordinates = boundary.split(',').map(parseFloat)
+    map.addSource(boundary, {
       type: 'image',
-      url: `/layers/${line}?dir=${dir}`,
+      url: `/layers/${key}`,
       coordinates: [
         [coordinates[0], coordinates[3]],
         [coordinates[2], coordinates[3]],
@@ -17,8 +19,8 @@ async function getLayers(map) {
       ]
     })
     map.addLayer({
-      id: `overlay${line}`,
-      source: line,
+      id: `overlay${key}`,
+      source: boundary,
       type: 'raster',
       paint: {
         'raster-opacity': 0.85

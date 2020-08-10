@@ -126,16 +126,65 @@ class SQLStorage {
   /**
    *
    * @param {string} userKey
+   * @param {string} boundary
    * @param {string} path
    */
-  async addHeatMapImage(userKey, path) {
+  async addHeatMapImage(userKey, boundary, path) {
     const now = Date.now()
     await this.db('heatmaps').insert({
       userId: userKey,
+      boundary,
       filePath: path,
       createdAt: now,
       updatedAt: now
     })
+  }
+
+  /**
+   *
+   * @param {string} userKey
+   *
+   * @returns {Promise<import('.').StoredHeatMap[]>}
+   */
+  async loadAllHeatMapImages(userKey) {
+    const records = await this.db('heatmaps').where({
+      userId: userKey
+    })
+    return records.map((record) => ({
+      key: record.id,
+      userKey: record.userId,
+      boundary: record.boundary,
+      path: record.filePath,
+
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      deletedAt: record.deletedAt
+    }))
+  }
+
+  /**
+   *
+   * @param {string} key
+   *
+   * @returns {Promise<import('.').StoredHeatMap | null>}
+   */
+  async getHeatMapImage(key) {
+    const record = await this.db('heatmaps')
+      .where({
+        id: key
+      })
+      .first()
+    if (!record) return null
+    return {
+      key: record.id,
+      userKey: record.userId,
+      boundary: record.boundary,
+      path: record.filePath,
+
+      createdAt: record.createdAt,
+      updatedAt: record.updatedAt,
+      deletedAt: record.deletedAt
+    }
   }
 
   /**

@@ -9,6 +9,17 @@ type StoredUser = User & {
   deletedAt: number | null
 }
 
+type StoredHeatMap = {
+  key: string
+  userKey: string
+  boundary: string
+  path: string
+
+  createdAt: number
+  updatedAt: number
+  deletedAt: number | null
+}
+
 export interface Storage {
   addActivity(userKey: string, activity: Activity): Promise<void>
   // getActivities(userId: number): Promise<Activity[]>
@@ -19,7 +30,13 @@ export interface Storage {
   //   to: number
   // ): Promise<Point[]>
 
-  addHeatMapImage(userKey: string, path: string): Promise<void>
+  addHeatMapImage(
+    userKey: string,
+    boundary: string,
+    path: string
+  ): Promise<void>
+  loadAllHeatMapImages(userKey: string): Promise<StoredHeatMap[]>
+  getHeatMapImage(key: string): Promise<StoredHeatMap | null>
 
   getSession(key: string): Promise<Session | null>
   updateSession(key: string, data: any): Promise<void>

@@ -35,7 +35,7 @@ async function run(task) {
         `${block}.png`
       )
       if (!path) continue
-      await storage.addHeatMapImage(userKey, path)
+      await storage.addHeatMapImage(userKey, block, path)
     }
   } finally {
     await storage.close()

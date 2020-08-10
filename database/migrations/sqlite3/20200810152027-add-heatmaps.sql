@@ -6,6 +6,7 @@ CREATE TABLE heatmaps (
   userId INTEGER NOT NULL,
   
   filePath TEXT NOT NULL,
+  boundary TEXT NOT NULL,
 
   createdAt INTEGER NOT NULL,
   updatedAt INTEGER NOT NULL,
