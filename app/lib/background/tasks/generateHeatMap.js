@@ -8,32 +8,31 @@ const MapHeat = require('mapheat')
 const { getStorage } = require('../../storage')
 const { getFileLoader } = require('../../file')
 
-async function run() {
+/**
+ *
+ * @param {Task} task
+ */
+async function run(task) {
+  const fileLoader = getFileLoader()
   const storage = await getStorage()
   try {
-    const points = await storage.getPoints('1')
+    const userKey = task.data.userKey
+    const points = await storage.getPoints(userKey)
     const blocks = /** @type {import('mapheat/types').Blocks} */ ({})
     const instance = new MapHeat()
     for (const point of points) {
       instance.addPoint(point, blocks)
     }
-    const userDir = `${__dirname}/users/1`
-    try {
-      fs.accessSync(userDir)
-    } catch (error) {
-      fs.mkdirSync(userDir, { recursive: true })
+
+    const nonEmptyBlocks = Object.keys(blocks).filter(
+      (block) => blocks[block].points.size > 0
+    )
+    for (const block of nonEmptyBlocks) {
+      const canvas = instance.draw(blocks[block])
+      await fileLoader.save(canvas.toBuffer(), 'heatimage', `${block}.png`)
     }
-    instance.write(userDir, blocks)
   } finally {
     await storage.close()
   }
 }
-
-run()
-  .then(() => {
-    console.log('Done')
-  })
-  .catch((error) => {
-    console.error(error.message)
-    console.error(error.stack)
-  })
+exports.run = run

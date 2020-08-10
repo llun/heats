@@ -1,6 +1,7 @@
 // @ts-check
 const fs = require('fs')
 const path = require('path')
+const { file } = require('jszip')
 
 class LocalFileLoader {
   /**
@@ -27,7 +28,7 @@ class LocalFileLoader {
    * @param {string} filename
    */
   async save(buffer, type, filename) {
-    const fullPath = path.join(this.root, type, filename)
+    const fullPath = path.join(this.root, `${type}-${filename}`)
     try {
       fs.writeFileSync(fullPath, buffer)
     } catch (error) {
