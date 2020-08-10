@@ -19,6 +19,8 @@ export interface Storage {
   //   to: number
   // ): Promise<Point[]>
 
+  addHeatMapImage(userKey: string, path: string): Promise<void>
+
   getSession(key: string): Promise<Session | null>
   updateSession(key: string, data: any): Promise<void>
   destroySession(key: string): Promise<void>

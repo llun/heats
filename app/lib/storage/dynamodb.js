@@ -90,6 +90,29 @@ class DynamoDBStorage {
   }
 
   /**
+   *
+   * @param {string} userKey
+   * @param {string} path
+   */
+  async addHeatMapImage(userKey, path) {
+    const now = Date.now()
+    const key = uuid()
+    await this.client
+      .put({
+        TableName: `HeatMaps-${environment()}`,
+        Item: {
+          key,
+          userKey,
+          path,
+          createdAt: now,
+          updatedAt: now,
+          deletedAt: null
+        }
+      })
+      .promise()
+  }
+
+  /**
    * Session methods
    */
 

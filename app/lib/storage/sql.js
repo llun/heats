@@ -124,6 +124,21 @@ class SQLStorage {
   }
 
   /**
+   *
+   * @param {string} userKey
+   * @param {string} path
+   */
+  async addHeatMapImage(userKey, path) {
+    const now = Date.now()
+    await this.db('heatmaps').insert({
+      userId: userKey,
+      filePath: path,
+      createdAt: now,
+      updatedAt: now
+    })
+  }
+
+  /**
    * Session methods
    */
 

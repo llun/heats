@@ -143,6 +143,29 @@ resources:
             Projection:
               ProjectionType: ALL
         BillingMode: PAY_PER_REQUEST
+    HeatMapTable:
+      Type: AWS::DynamoDB::Table
+      Properties:
+        TableName: 'HeatMaps-${opt:stage}'
+        AttributeDefinitions:
+          - AttributeName: key
+            AttributeType: S
+          - AttributeName: userKey
+            AttributeType: S
+          - AttributeName: createdAt
+            AttributeType: N
+        KeySchema:
+          - AttributeName: key
+            KeyType: HASH
+          - AttributeName: createdAt
+            KeyType: RANGE
+        GlobalSecondaryIndexes:
+          - IndexName: UserHeatMapsIndex
+            KeySchema:
+              - AttributeName: userKey
+                KeyType: HASH
+              - AttributeName: createdAt
+                KeyType: RANGE
     BackgroundQueue:
       Type: 'AWS::SQS::Queue'
       Properties:
