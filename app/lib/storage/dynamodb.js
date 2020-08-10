@@ -20,7 +20,7 @@ class DynamoDBStorage {
   async addActivity(userKey, activity) {
     const { points } = activity
     const now = Date.now()
-    const key = uuid()
+    const key = `activity-${activity.file}-${userKey}`
     await this.client
       .put({
         TableName: `Activities-${environment()}`,
