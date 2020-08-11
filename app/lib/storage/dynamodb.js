@@ -84,11 +84,10 @@ class DynamoDBStorage {
         })
         .promise()
       nextEvaluateKey = response.LastEvaluatedKey
-
       const items = response.Items || []
       points.push(...items)
     } while (nextEvaluateKey)
-    return []
+    return points
   }
 
   /**

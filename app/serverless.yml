@@ -36,6 +36,7 @@ provider:
         - 'arn:aws:dynamodb:*:*:table/Users-*'
         - 'arn:aws:dynamodb:*:*:table/Activities-*'
         - 'arn:aws:dynamodb:*:*:table/ActivityPoints-*'
+        - 'arn:aws:dynamodb:*:*:table/HeatMaps-*'
         - 'arn:aws:sqs:*:*:Heats-Default-${opt:stage}'
         - 'arn:aws:s3:::heats-${opt:stage}/*'
 
@@ -53,6 +54,9 @@ functions:
     memorySize: 1024
     reservedConcurrency: 5
     timeout: 300
+    layers:
+      - arn:aws:lambda:ap-southeast-1:107563078874:layer:node12-canvas:1
+      - arn:aws:lambda:ap-southeast-1:107563078874:layer:canvas-lib64:1
     events:
       - sqs:
           arn:
