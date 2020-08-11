@@ -151,15 +151,29 @@ class DynamoDBStorage {
    * @returns {Promise<import('.').StoredHeatMap | null>}
    */
   async getHeatMapImage(key) {
-    const record = await this.client
-      .get({
-        TableName: `HeatMaps-${environment()}`,
-        Key: {
-          key
-        }
-      })
-      .promise()
-    return /** @type {import('.').StoredHeatMap} */ (record.Item) || null
+    try {
+      const records = await this.client
+        .query({
+          TableName: `HeatMaps-${environment()}`,
+          KeyConditionExpression: '#key = :key',
+          ExpressionAttributeNames: {
+            '#key': 'key'
+          },
+          ExpressionAttributeValues: {
+            ':key': key
+          }
+        })
+        .promise()
+      const item =
+        records.Items && records.Items.length > 0
+          ? /** @type {import('.').StoredHeatMap} */ (records.Items[0])
+          : null
+      return item
+    } catch (error) {
+      console.error(error.message)
+      console.error(new Error().stack)
+      return null
+    }
   }
 
   /**
