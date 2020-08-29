@@ -318,7 +318,7 @@ class SQLStorage {
         createdAt: now,
         updatedAt: now
       })
-      return this.getUserByKey(key)
+      return this.getUserByKey(`${key}`)
     } catch (error) {
       console.error(error.message)
       return null
