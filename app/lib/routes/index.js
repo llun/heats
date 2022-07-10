@@ -11,9 +11,10 @@ const { routes: layers } = require('./layers')
 /**
  * @param {import('passport')} passport
  *
- * @returns {import('@koa/router')}
+ * @returns {import('../types').AppRouter}
  */
 exports.routes = (passport) => {
+  /** @type {import('../types').AppRouter} */
   const router = new Router()
   router.get('/', unauthenticatedGuard, renderPage('index.njk'))
   router.get('/signup', unauthenticatedGuard, renderPage('signup.njk'))

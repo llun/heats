@@ -111,9 +111,10 @@ module.exports = function main() {
        * @param {string} msg
        */
       ctx.flash = function (type, msg) {
+        if (!ctx.session) return
         ctx.session.flash = { type: type, message: msg }
       }
-      if (ctx.session.flash) {
+      if (ctx.session && ctx.session.flash) {
         ctx.state.flash = ctx.session.flash
         delete ctx.session.flash
       }

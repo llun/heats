@@ -1,10 +1,10 @@
 // @ts-check
-const knex = require('knex')
+const knex = require('knex').default
 const path = require('path')
 const { TimeoutError } = require('tarn')
 
 /**
- * @typedef {import('knex').Config} Config
+ * @typedef {import('knex').Knex.Config} Config
  */
 class SQLStorage {
   /**

@@ -15,6 +15,7 @@
   "dependencies": {
     "@koa/cors": "^3.3.0",
     "@koa/router": "^11.0.1",
+    "@types/aws-lambda": "^8.10.101",
     "dotenv": "^16.0.1",
     "fast-xml-parser": "^4.0.9",
     "fit-file-parser": "^1.9.3",

@@ -8,7 +8,7 @@ const MIGRATE_DOWN_HEADER = '-- +migrate Down'
 
 /**
  *
- * @param {import('knex')} knex
+ * @param {import('knex').Knex} knex
  */
 async function loadMigrations(knex) {
   const migrationRoot = path.resolve(

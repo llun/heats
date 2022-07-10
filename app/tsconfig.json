@@ -7,7 +7,8 @@
     "moduleResolution": "node",
     "strictNullChecks": true,
     "strictBindCallApply": true,
-    "strictFunctionTypes": true
+    "strictFunctionTypes": true,
+    "skipLibCheck": true
   },
   "include": ["./**/*.js", "./**/*.ts"],
   "exclude": ["node_modules", "index.js"]

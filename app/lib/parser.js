@@ -1,6 +1,6 @@
 // @ts-check
 const _ = require('lodash')
-const XMLParser = require('fast-xml-parser')
+const { XMLParser } = require('fast-xml-parser')
 const FitParser = require('fit-file-parser').default
 const JSZip = require('jszip')
 const { unzipSync } = require('zlib')
@@ -10,10 +10,11 @@ const path = require('path')
  * @type {import('./types').Parser}
  * */
 const parseGPX = async (buffer, filename) => {
-  const data = XMLParser.parse(buffer.toString('utf8'), {
+  const parser = new XMLParser({
     attributeNamePrefix: '@',
     ignoreAttributes: false
   })
+  const data = parser.parse(buffer.toString('utf8'))
   const GPX = data.gpx
   const createdWith = GPX['@creator']
   const startedAt = new Date(GPX.metadata.time).getTime()
@@ -53,10 +54,11 @@ exports.parseGPX = parseGPX
  * @type {import('./types').Parser}
  */
 const parseTCX = async (buffer, filename) => {
-  const data = XMLParser.parse(buffer.toString('utf8'), {
+  const parser = new XMLParser({
     attributeNamePrefix: '@',
     ignoreAttributes: false
   })
+  const data = parser.parse(buffer.toString('utf8'))
 
   const activities = Array.isArray(data.TrainingCenterDatabase.Activities)
     ? data.TrainingCenterDatabase.Activities

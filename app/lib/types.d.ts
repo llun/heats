@@ -51,16 +51,4 @@ export type AppContext = RouterContext & {
   }
 }
 
-export type AppRouter = Router<
-  any,
-  DefaultContext & {
-    storage: Storage
-    fileLoader: FileLoader
-    backgroundRunner: BackgroundRunner
-    flash: (type: FlashType, message: string) => void
-    logout: () => Promise<void>
-    files?: {
-      [key in string]: File[]
-    }
-  }
->
+export type AppRouter = Router<any, AppContext>

@@ -35,7 +35,7 @@ exports.createUser = createUser
 /**
  * @param {import('passport')} passport
  *
- * @returns {import('@koa/router')}
+ * @returns {import('../types').AppRouter}
  */
 exports.routes = (passport) => {
   /** @type {import('../types').AppRouter} */
