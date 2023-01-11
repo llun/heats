@@ -20,7 +20,7 @@
     "fast-xml-parser": "^4.0.9",
     "fit-file-parser": "^1.9.3",
     "jszip": "^3.10.0",
-    "knex": "^2.1.0",
+    "knex": "^2.4.0",
     "koa": "^2.13.4",
     "koa-body": "^5.0.0",
     "koa-bodyparser": "^4.3.0",
