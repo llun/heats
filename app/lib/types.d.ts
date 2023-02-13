@@ -1,9 +1,8 @@
 import Router, { RouterContext } from '@koa/router'
-import { DefaultContext } from 'koa'
 import { File } from 'multiparty'
-import { Storage } from './storage'
-import { FileLoader } from './file'
 import { BackgroundRunner } from './background'
+import { FileLoader } from './file'
+import { Storage } from './storage'
 
 export type Point = {
   latitude: number
@@ -41,7 +40,14 @@ type FlashType =
   | 'alert-info'
   | 'alert-light'
   | 'alert-dark'
-export type AppContext = RouterContext & {
+export type AppContext = RouterContext<
+  Koa.DefaultState,
+  Koa.DefaultContext,
+  {
+    username: string
+    password: string
+  }
+> & {
   storage: Storage
   fileLoader: FileLoader
   backgroundRunner: BackgroundRunner
